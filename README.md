@@ -1,12 +1,12 @@
-# Team *enter team name here* Small Group project
+# Team Polecat Small Group project
 
 ## Team members
 The members of the team are:
-- *enter full name 1 here*
-- *enter full name 2 here*
-- *enter full name 3 here*
-- *enter full name 4 here*
-- *enter full name 5 here*
+- Iffat Siddick
+- Theodore Tsiberopoulos
+- Mohammed Fohpa
+- Rulaa Alhazzani
+- Shreeya Chandel
 
 ## Project structure
 The project is called `task_manager`.  It currently consists of a single app `tasks`.
