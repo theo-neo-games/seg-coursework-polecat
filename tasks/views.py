@@ -151,3 +151,9 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
+
+def taskManagement(request):
+    """Display the task management page."""
+
+    current_user = request.user
+    return render(request, 'task_management.html', {'user': current_user})

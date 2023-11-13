@@ -1,0 +1,138 @@
+<!DOCTYPE html> <!-- Declares langauage to be HTML -->
+<html>
+
+<head> <!-- This is the head and contains all metadata and what will be displayed in the tab -->
+    <title>Task managemet</title>  <!-- This is what will be shown in the tab. 
+    It shows the name and pupose of the web page 
+    -->
+    <link rel="stylesheet" href="task_management_css.css">
+</head>
+
+
+<body> <!-- This declares that the next section will be for the webpage-->
+
+<!--<?php $database = new SQLite3('RevisionHelp.db');?> -->
+
+<h1 class="header">Your Task Management Page</h1>
+
+<div class = "right">
+    <h3>Project1</h3>
+    
+    <input type = "checkbox" id = "task1" name = "task2" value = "task2">
+    <label for = "task1"> This is my first task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task2" name = "task1" value = "task1">
+    <label for = "task2"> This is my second task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task3" name = "task3" value = "task3">
+    <label for = "task3"> This is my third task </label>
+
+</div>
+
+<div class = "middle">
+    <h3>Project2</h3>
+
+    <input type = "checkbox" id = "task1" name = "task2" value = "task2">
+    <label for = "task1"> This is my first task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task2" name = "task1" value = "task1">
+    <label for = "task2"> This is my second task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task3" name = "task3" value = "task3">
+    <label for = "task3"> This is my third task </label>
+
+
+</div>
+
+<div class = "left">
+    <h3>Project3</h3>
+
+    <input type = "checkbox" id = "task1" name = "task2" value = "task2">
+    <label for = "task1"> This is my first task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task2" name = "task1" value = "task1">
+    <label for = "task2"> This is my second task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task3" name = "task3" value = "task3">
+    <label for = "task3"> This is my third task </label>
+
+
+</div>
+
+<script> //This is the start of the javascript. The purpose of this section is 
+//to add interactivity to the wep gabe through buttons and to validate inputs
+
+function validateNewUsername() { //This is the function for validating the username input
+var SUU = document.forms["NewUsername"]["SignUpAnswerUsername"].value; //This creates the variable x which
+//stores the input from form username, text answerUsername
+if (SUU == ""){ //This checks if the user input any data
+document.getElementById("SignUpUsername").style.color = "red"; //If there was no input than the text will become red
+// to indicate to the user that they nned to input data
+alert("You must enter a value for your username");
+}
+}
+
+function validateNewPassword() { //This function validates theh password input
+var SUP = document.forms["NewPassword"]["SignUpAnswerPassword"].value; //Varible y is created which stores the input
+// from form password, text answerPassword
+if (SUP== ""){ //This checks if the user has input data
+document.getElementById("SignUpPassword").style.color = "red"; //If not the text will become red
+// to indicate the user needs to input data
+alert("You must enter a value for your password");
+}
+} //ends whole function
+</script> <!--End of javaScript-->
+
+<script> //This is the start of the javascript. The purpose of this section is 
+//to add interactivity to the wep gabe through buttons and to validate inputs
+
+function validateUsername() { //This is the function for validating the username input
+var LIU = document.forms["username"]["LoginAnswerUsername"].value; //This creates the variable x which
+//stores the input from form username, text answerUsername
+if (LIU == ""){ //This checks if the user input any data
+document.getElementById("LoginUsername").style.color = "red"; //If there was no input than the text will become red
+// to indicate to the user that they nned to input data
+alert("You must enter a value");
+}
+else if (LIU == "Nuha"){ //This chcks the user input the right data
+alert("Correct username"); //If so, the user will see a message
+// telling them they have correctly entered their username
+}
+else if (LIU != "Nuha"){ //This chcks the user input the right data
+alert("Incorrect username. Please try again"); //If so, the user will see a message
+// telling them they have correctly entered their username
+}
+}
+
+function validatePassword() { //Thus function validates theh password input
+var LIP = document.forms["password"]["LoginAnswerPassword"].value; //Varible y is created which stores the input
+// from form password, text answerPassword
+if (LIP== ""){ //This checks if the user has input data
+document.getElementById("LoginPassword").style.color = "red"; //If not the text will become red
+// to indicate the user needs to input data
+alert("You must enter a value");
+}
+else if (LIP == "C4T5"){ //This checks if the user has input the orrect password
+alert("Correct password"); //If they have a message is displyed to tell them this
+}
+else if (LIP != "C4T5"){ //This checks if the user has input the orrect password
+alert("Incorrect password. Please try again"); //If they have a message is displyed to tell them this
+}
+}
+</script> <!--End of javaScript-->
+
+</div>
+</body> <!--Closes body tag-->>
+</html> <!--Closes HTML tage. End of web page-->

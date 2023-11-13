@@ -1,0 +1,10 @@
+.right /*This splits the website content into two parts with one half being in the right of the screen*/
+{
+    float: right; /*positions content on right half of screen*/
+    text-align: left; /*everything will be aligned to the left as this is 
+    the natural way users will view information*/
+    margin-right: 500px; /*Stops content from disappearing off screen
+    and from being too spaced out from left side*/
+    padding: 5px
+}
+

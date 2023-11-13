@@ -1,0 +1,118 @@
+<!DOCTYPE html> <!-- Declares langauage to be HTML -->
+<html>
+
+<head> <!-- This is the head and contains all metadata and what will be displayed in the tab -->
+    <title>Task managemet</title>  <!-- This is what will be shown in the tab. 
+    It shows the name and pupose of the web page 
+    -->
+    <link rel="stylesheet" href="CSS general.css">
+</head>
+
+
+<body> <!-- This declares that the next section will be for the webpage-->
+
+<!--<?php $database = new SQLite3('RevisionHelp.db');?> -->
+
+<h1 class="header">Your Task Management Page</h1>
+
+<div class="right">
+    <h3>Login</h3>
+    
+    <form name="username"> <!--Creates a form called username-->
+    <p id="LoginUsername">Enter your username: </p> <!-- Creates a text box for the user to enter their username in-->
+    <input type="text" name="LoginAnswerUsername"> <!--Declares inout data type is text, creates variable name-->
+    <button type="button" onclick="validateUsername()">Enter</button> <!--Creates a butoon to submit username 
+    and a function to validate it-->
+    </form> <!--Ends form-->
+    
+    <form name="password"> <!--Creates a form for the passowrd input-->
+    <p id="LoginPassword">Enter your password: </p> <!--Tells user what to do-->
+    <input type="text" name="LoginAnswerPassword"> <!--Inout as text box and saved as variable-->
+    <button type="button" onclick="validatePassword()">Enter</button> <!--Creates button to submit password 
+    and a function to validate the input-->
+    </form> <!--Ends form-->
+</div>
+
+<div class="left">
+<h3>Sign Up</h3>
+
+<form name="NewUsername"> <!--Creates a form called NewUsername-->
+<p id="SignUpUsername">Enter your new username: </p> <!-- Creates a text box for the user to enter their username in-->
+<input type="text" name="SignUpAnswerUsername"> <!--Declares inout data type is text, creates variable name-->
+<button type="button" onclick="validateNewUsername()">Enter</button> <!--Creates a butoon to submit username 
+and a function to validate it-->
+</form> <!--Ends form-->
+
+<form name="NewPassword"> <!--Creates a form for the password input-->
+<p id="SignUpPassword">Enter your new password: </p> <!--Tells user what to do-->
+<input type="text" name="SignUpAnswerPassword"> <!--Input as text box and saved as variable-->
+<button type="button" onclick="validateNewPassword()">Enter</button> <!--Creates button to submit password 
+and a function to validate the input-->
+</form> <!--Ends form-->
+</div>
+
+<script> //This is the start of the javascript. The purpose of this section is 
+//to add interactivity to the wep gabe through buttons and to validate inputs
+
+function validateNewUsername() { //This is the function for validating the username input
+var SUU = document.forms["NewUsername"]["SignUpAnswerUsername"].value; //This creates the variable x which
+//stores the input from form username, text answerUsername
+if (SUU == ""){ //This checks if the user input any data
+document.getElementById("SignUpUsername").style.color = "red"; //If there was no input than the text will become red
+// to indicate to the user that they nned to input data
+alert("You must enter a value for your username");
+}
+}
+
+function validateNewPassword() { //This function validates theh password input
+var SUP = document.forms["NewPassword"]["SignUpAnswerPassword"].value; //Varible y is created which stores the input
+// from form password, text answerPassword
+if (SUP== ""){ //This checks if the user has input data
+document.getElementById("SignUpPassword").style.color = "red"; //If not the text will become red
+// to indicate the user needs to input data
+alert("You must enter a value for your password");
+}
+} //ends whole function
+</script> <!--End of javaScript-->
+
+<script> //This is the start of the javascript. The purpose of this section is 
+//to add interactivity to the wep gabe through buttons and to validate inputs
+
+function validateUsername() { //This is the function for validating the username input
+var LIU = document.forms["username"]["LoginAnswerUsername"].value; //This creates the variable x which
+//stores the input from form username, text answerUsername
+if (LIU == ""){ //This checks if the user input any data
+document.getElementById("LoginUsername").style.color = "red"; //If there was no input than the text will become red
+// to indicate to the user that they nned to input data
+alert("You must enter a value");
+}
+else if (LIU == "Nuha"){ //This chcks the user input the right data
+alert("Correct username"); //If so, the user will see a message
+// telling them they have correctly entered their username
+}
+else if (LIU != "Nuha"){ //This chcks the user input the right data
+alert("Incorrect username. Please try again"); //If so, the user will see a message
+// telling them they have correctly entered their username
+}
+}
+
+function validatePassword() { //Thus function validates theh password input
+var LIP = document.forms["password"]["LoginAnswerPassword"].value; //Varible y is created which stores the input
+// from form password, text answerPassword
+if (LIP== ""){ //This checks if the user has input data
+document.getElementById("LoginPassword").style.color = "red"; //If not the text will become red
+// to indicate the user needs to input data
+alert("You must enter a value");
+}
+else if (LIP == "C4T5"){ //This checks if the user has input the orrect password
+alert("Correct password"); //If they have a message is displyed to tell them this
+}
+else if (LIP != "C4T5"){ //This checks if the user has input the orrect password
+alert("Incorrect password. Please try again"); //If they have a message is displyed to tell them this
+}
+}
+</script> <!--End of javaScript-->
+
+</div>
+</body> <!--Closes body tag-->>
+</html> <!--Closes HTML tage. End of web page-->
