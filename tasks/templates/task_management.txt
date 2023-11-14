@@ -5,7 +5,7 @@
     <title>Task managemet</title>  <!-- This is what will be shown in the tab. 
     It shows the name and pupose of the web page 
     -->
-    <link rel="stylesheet" href="CSS general.css">
+    <link rel="stylesheet" href="task_management_css.css">
 </head>
 
 
@@ -15,33 +15,60 @@
 
 <h1 class="header">Your Task Management Page</h1>
 
-<div class="right">
-    <h3>Project1 Name</h3>
+<div class = "left">
+    <h3>Project1</h3>
     
-    <input type = "checkbox" id = "task1" id = "task2" id = "task3">
-    
+    <input type = "checkbox" id = "task1" name = "task2" value = "task2">
     <label for = "task1"> This is my first task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task2" name = "task1" value = "task1">
     <label for = "task2"> This is my second task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task3" name = "task3" value = "task3">
     <label for = "task3"> This is my third task </label>
 
 </div>
 
-<div class="left">
-<h3>Sign Up</h3>
+<div class = "middle">
+    <h3>Project2</h3>
 
-<form name="NewUsername"> <!--Creates a form called NewUsername-->
-<p id="SignUpUsername">Enter your new username: </p> <!-- Creates a text box for the user to enter their username in-->
-<input type="text" name="SignUpAnswerUsername"> <!--Declares inout data type is text, creates variable name-->
-<button type="button" onclick="validateNewUsername()">Enter</button> <!--Creates a butoon to submit username 
-and a function to validate it-->
-</form> <!--Ends form-->
+    <input type = "checkbox" id = "task1" name = "task2" value = "task2">
+    <label for = "task1"> This is my first task </label>
 
-<form name="NewPassword"> <!--Creates a form for the password input-->
-<p id="SignUpPassword">Enter your new password: </p> <!--Tells user what to do-->
-<input type="text" name="SignUpAnswerPassword"> <!--Input as text box and saved as variable-->
-<button type="button" onclick="validateNewPassword()">Enter</button> <!--Creates button to submit password 
-and a function to validate the input-->
-</form> <!--Ends form-->
+    <br></br>
+
+    <input type = "checkbox" id = "task2" name = "task1" value = "task1">
+    <label for = "task2"> This is my second task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task3" name = "task3" value = "task3">
+    <label for = "task3"> This is my third task </label>
+
+
+</div>
+
+<div class = "right">
+    <h3>Project3</h3>
+
+    <input type = "checkbox" id = "task1" name = "task2" value = "task2">
+    <label for = "task1"> This is my first task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task2" name = "task1" value = "task1">
+    <label for = "task2"> This is my second task </label>
+
+    <br></br>
+
+    <input type = "checkbox" id = "task3" name = "task3" value = "task3">
+    <label for = "task3"> This is my third task </label>
+
+
 </div>
 
 <script> //This is the start of the javascript. The purpose of this section is 
