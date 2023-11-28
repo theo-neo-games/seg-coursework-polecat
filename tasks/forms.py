@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User
+from .models import Task
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -19,6 +20,16 @@ class LogInForm(forms.Form):
             password = self.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
         return user
+
+class TaskForm(forms.Form):
+    class Meta:
+        model = Task
+        
+    title = forms.CharField(label='Task Name')
+    information = forms.CharField(label='Task Information', widget=forms.Textarea())
+    dueDate = forms.DateTimeField(label='Deadline')
+    usersToAssign = forms.CharField(label='Assign Users (comma separated)')
+
 
 
 class UserForm(forms.ModelForm):

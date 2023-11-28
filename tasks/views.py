@@ -8,9 +8,9 @@ from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
-from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm
+from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, TaskForm
 from tasks.helpers import login_prohibited
-
+from .models import Task, Assigned, User
 
 @login_required
 def dashboard(request):
@@ -26,7 +26,31 @@ def home(request):
 
     return render(request, 'home.html')
 
-
+def newTask(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            Task.objects.create(
+                title=form.cleaned_data.get('title'),
+                information=form.cleaned_data.get('information'),
+                dueDate=form.cleaned_data.get('dueDate'),
+            )
+            users = form.cleaned_data.get('usersToAssign').split(',')
+            task = Task.objects.get(title=form.cleaned_data.get('title'))
+            for user in users:
+                Assigned.objects.create(user=User.objects.get(username=user), task=task)
+            return redirect('dashboard')
+    else:
+        form = TaskForm()
+    return render(request, 'new_task.html', {'form': form})
+            
+def assignUsers(request):
+    form = TaskForm(request.POST)
+    users = form.cleaned_data.get('usersToAssign').split(',')
+    task = Task.objects.get(title=form.cleaned_data.get('title'))
+    for user in users:
+        Assigned.objects.create(user=user, task=task)
+        
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
