@@ -1,0 +1,20 @@
+<!--Update task information-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update task information</title>
+</head>
+<body>
+    <h2>Update your task's information</h2>
+
+    <form method="post" action="{% url 'updateInformation' %}">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+
+        <button type="submit">Update task</button>
+    </form>
+</body>
+</html>

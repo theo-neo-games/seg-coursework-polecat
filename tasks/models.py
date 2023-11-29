@@ -18,6 +18,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
     tasks = models.ManyToManyField('Task', through='Assigned')
+    updateInformation = models.ManyToManyField('TaskInformation', through='Assigned')
 
     class Meta:
         """Model options."""
@@ -47,10 +48,14 @@ class Task(models.Model):
     information = models.TextField(max_length=1000, blank=True)
     assignedUsers = models.ManyToManyField('User', through='Assigned')
     dueDate = models.DateTimeField()
+
+class TaskInformation(models.Model):
+    information = models.TextField(max_length=1000, blank=True)
     
 class Assigned(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    information = models.ForeignKey(TaskInformation, on_delete=models.CASCADE)
     
     
     
