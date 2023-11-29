@@ -17,7 +17,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
-
+    tasks = models.ManyToManyField('Task', through='Assigned')
 
     class Meta:
         """Model options."""
@@ -40,3 +40,17 @@ class User(AbstractUser):
         """Return a URL to a miniature version of the user's gravatar."""
         
         return self.gravatar(size=60)
+    
+class Task(models.Model):
+
+    title = models.CharField(max_length=100)
+    information = models.TextField(max_length=1000, blank=True)
+    assignedUsers = models.ManyToManyField('User', through='Assigned')
+    dueDate = models.DateTimeField()
+    
+class Assigned(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    
+    
