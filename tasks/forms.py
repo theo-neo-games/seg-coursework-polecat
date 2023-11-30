@@ -30,11 +30,11 @@ class TaskForm(forms.Form):
     dueDate = forms.DateTimeField(label='Deadline')
     usersToAssign = forms.CharField(label='Assign Users (comma separated)')
 
-class UpdateTaskFormInformation(forms.Form):
-    class Meta:
-        model = Task
-
-    information = forms.CharField(label = "Task Information", widget = forms.Textarea())
+##class UpdateTaskFormInformation(forms.Form):
+##    class Meta:
+##        model = Task
+##
+##    information = forms.CharField(label = "Task Information", widget = forms.Textarea())
 
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""

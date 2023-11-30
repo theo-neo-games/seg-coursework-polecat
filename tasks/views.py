@@ -51,17 +51,17 @@ def assignUsers(request):
     for user in users:
         Assigned.objects.create(user=user, task=task)
 
-def updateTaskInformation(request):
-    if request.method == "POST":
-        form = UpdateTaskFormInformation(request.POST)
-        if form.is_valid():
-            TaskInformation.objects.create{
-                information=form.cleaned_data.get('information'),
-                }
-            return redirect("dashboard")
-    else:
-        form = UpdateTaskFormInformation()
-    return render(request, "update_task_information.html", ("form": form))        
+##def updateTaskInformation(request):
+##    if request.method == "POST":
+##        form = UpdateTaskFormInformation(request.POST)
+##        if form.is_valid():
+##            TaskInformation.objects.create{
+##                information=form.cleaned_data.get('information'),
+##                }
+##            return redirect("dashboard")
+##    else:
+##        form = UpdateTaskFormInformation()
+##    return render(request, "update_task_information.html", ("form": form))        
         
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
