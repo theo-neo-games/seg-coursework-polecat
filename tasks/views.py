@@ -193,3 +193,21 @@ def taskManagement(request):
 
     current_user = request.user
     return render(request, 'task_management.html', {'user': current_user})
+
+def team(request):
+    """Display the team page."""
+
+    current_user = request.user
+    return render(request, 'team.html', {'user': current_user})
+
+def new_team(request):
+    """Display the team page."""
+
+    current_user = request.user
+    return render(request, 'new_team.html', {'user': current_user})
+
+def new_team_member(request):
+    """Display the team page."""
+
+    current_user = request.user
+    return render(request, 'new_team_member.html', {'user': current_user})
