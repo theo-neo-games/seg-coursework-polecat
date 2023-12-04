@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User
-from .models import Task
+from .models import Task, Team, TeamModel
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -30,11 +30,10 @@ class TaskForm(forms.Form):
     dueDate = forms.DateTimeField(label='Deadline')
     usersToAssign = forms.CharField(label='Assign Users (comma separated)')
 
-##class UpdateTaskFormInformation(forms.Form):
-##    class Meta:
-##        model = Task
-##
-##    information = forms.CharField(label = "Task Information", widget = forms.Textarea())
+class UpdateTaskFormInformation(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'information', 'assignedUsers', 'dueDate']
 
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
@@ -123,3 +122,11 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+
+class TeamCreationForm(forms.ModelForm):
+    class Meta:
+        model = TeamModel
+        fields = ['user_name']
+
+class InvitationForm(forms.Form):
+    recipient_username = forms.CharField(max_length=150)

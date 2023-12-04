@@ -29,8 +29,8 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('task_management/', views.taskManagement, name = 'tasks'),
     path('new_task/', views.newTask, name='new_task'),
-    #path("changeTaskInformation/", views.updateDescription, name = "updateInformation"),
-    path('team/',views.team, name='team'),
-    path('new_team/',views.new_team, name = 'new_team'),
-    path('new_team_member/',views.new_team_member, name = 'new_team_member'),
+    path("changeTaskInformation/", views.updateTaskInformation, name = "updateInformation"),
+    #path('team/',views.team, name='team'),
+    #path('new_team/',views.new_team, name = 'new_team'),
+    #path('new_team_member/',views.new_team_member, name = 'new_team_member'),
 ]

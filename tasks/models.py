@@ -48,9 +48,6 @@ class Task(models.Model):
     information = models.TextField(max_length=1000, blank=True)
     assignedUsers = models.ManyToManyField('User', through='Assigned')
     dueDate = models.DateTimeField()
-
-##class TaskInformation(models.Model):
-##    information = models.TextField(max_length=1000, blank=True)
     
 class Assigned(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
