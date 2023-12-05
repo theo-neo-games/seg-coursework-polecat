@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Update user's assigned to a task</title>
+    </head>
+
+    <body>
+        <h2>Update your task's information</h2>
+
+        <form method="post" action="{% url 'updateTaskUser' %}">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <button type="submit">Update user's assigned to task</button>
+        </form>
+    </body>
+</html>

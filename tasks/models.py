@@ -43,7 +43,6 @@ class User(AbstractUser):
         return self.gravatar(size=60)
     
 class Task(models.Model):
-
     title = models.CharField(max_length=100)
     information = models.TextField(max_length=1000, blank=True)
     assignedUsers = models.ManyToManyField('User', through='Assigned')
