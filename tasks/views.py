@@ -43,7 +43,13 @@ def newTask(request):
     else:
         form = TaskForm()
     return render(request, 'new_task.html', {'form': form})
-            
+
+def viewTasks(request):
+    tasks = Task.objects.all()
+    return render(request, 'viewTasks.html', {'tasks': tasks})
+
+    
+
 def assignUsers(request):
     form = TaskForm(request.POST)
     users = form.cleaned_data.get('usersToAssign').split(',')

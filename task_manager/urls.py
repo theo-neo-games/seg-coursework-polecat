@@ -29,5 +29,6 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('task_management/', views.taskManagement, name = 'tasks'),
     path('new_task/', views.newTask, name='new_task'),
+    path('view_tasks/', views.viewTasks, name='view_tasks'),
     #path("changeTaskInformation/", views.updateDescription, name = "updateInformation"),
 ]

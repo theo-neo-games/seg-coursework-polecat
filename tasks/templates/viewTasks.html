@@ -1,0 +1,98 @@
+<!-- viewTasks.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks</title>
+    <style>
+    
+    * {
+        background-color: #ebe9e9;
+    }
+   
+        table{
+        width: 70%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background-color: #fff;
+      }
+
+      table thead td{
+        font-weight: 600;
+        background-color: #fff;
+      }
+
+      table tr{
+        color: var(--black1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+      }
+
+      table tr:last-child{
+        border-bottom: none;
+        background-color: #fff;
+      }
+
+      table tbody tr:hover{
+        background: #5F9EA0;
+        color: #fff;
+      }
+
+      table tr td{
+        padding: 10px;
+        background-color: #fff;
+      }
+      table tr td:last-child{
+        text-align: end;
+        background-color: #fff;
+      }
+
+      table tr td:nth-child(2){
+        text-align: end; 
+        background-color: #fff;
+      }
+
+      table tr td:nth-child(3){
+        text-align: center; 
+        background-color: #fff;
+      }
+
+      .main--container{
+        position: relative;
+        background: #ebe9e9;
+        width: 100%;
+        padding: 1rem;
+      }
+
+
+
+    </style>
+</head>
+<body>
+    <h1>View Tasks</h1>
+    <div class="main--container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Information</th>
+                    <th>Due Date</th>
+                    <!-- Add more columns if needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.information }}</td>
+                    <td>{{ task.dueDate }}</td>
+                    <!-- Add more columns if needed -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
