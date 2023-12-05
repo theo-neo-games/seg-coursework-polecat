@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 70%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .center {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .add-member-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-member-btn:hover {
+            background-color: #45a049;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Team Name</th>
+                <th class="center">Add Member</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through teams -->
+            <tr>
+                <td>Team A</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team B</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team C</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team D</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team E</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team F</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team G</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team H</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team I</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+            <tr>
+                <td>Team J</td>
+                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button onclick="createTeam()">Create New Team</button>
+
+    <script>
+        function createTeam() {
+            window.location.href = "{% url 'new_team' %}";
+           
+        }
+
+        function addMember() {
+            window.location.href = "{% url 'new_team_member' %}";
+        }
+    </script>
+
+</body>
+</html>

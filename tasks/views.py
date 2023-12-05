@@ -9,6 +9,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, TaskForm
+from tasks.forms import UpdateTaskFormInformation
 from tasks.helpers import login_prohibited
 from .models import Task, Assigned, User
 
@@ -18,7 +19,80 @@ def dashboard(request):
 
     current_user = request.user
     return render(request, 'dashboard.html', {'user': current_user})
+    
+@login_required
+def manage_teams(request):
+    teams = Team.objects.filter(members=request.user)
+    invitations = TeamMember.objects.filter(user=request.user, team__isnull=True)
 
+    if request.method == 'POST':
+        team_form = TeamCreationForm(request.POST)
+        task_form = TaskCreationForm(request.POST)
+        invitation_form = InvitationForm(request.POST)
+
+        if team_form.is_valid():
+            team = team_form.save()
+            TeamMember.objects.create(user=request.user, team=team)
+            messages.success(request, f'Team "{team.name}" created successfully!')
+
+        elif task_form.is_valid():
+            task = task_form.save()
+            messages.success(request, f'Task "{task.name}" created successfully!')
+
+        elif invitation_form.is_valid():
+            team_id = invitation_form.cleaned_data['team_id']
+            team = Team.objects.get(pk=team_id)
+
+            recipient_username = invitation_form.cleaned_data['recipient_username']
+            recipient = User.objects.get(username=recipient_username)
+
+            if recipient not in team.members.all():
+                TeamMember.objects.create(user=recipient, team=team)
+                messages.success(request, f'Invitation sent to {recipient_username}!')
+
+            else:
+                messages.error(request, f'{recipient_username} is already a member of the team.')
+
+        else:
+            messages.error(request, 'Form submission failed. Please check your input.')
+
+        return redirect('manage_teams')
+
+    else:
+        team_form = TeamCreationForm()
+        task_form = TaskCreationForm()
+        invitation_form = InvitationForm()
+
+    return render(request, 'manage_teams.html', {
+        'teams': teams,
+        'invitations': invitations,
+        'team_form': team_form,
+        'task_form': task_form,
+        'invitation_form': invitation_form,
+    })
+
+@login_required
+def send_invitation(request, team_id):
+    team = Team.objects.get(pk=team_id)
+
+    if request.method == 'POST':
+        invitation_form = InvitationForm(request.POST)
+        if invitation_form.is_valid():
+            recipient_username = invitation_form.cleaned_data['recipient_username']
+            recipient = User.objects.get(username=recipient_username)
+
+            # Check if the recipient is not already a member of the team
+            if recipient not in team.members.all():
+                TeamMember.objects.create(user=recipient, team=team)
+                messages.success(request, f'Invitation sent to {recipient_username}!')
+                return redirect('manage_teams')
+            else:
+                messages.error(request, f'{recipient_username} is already a member of the team.')
+
+    else:
+        invitation_form = InvitationForm()
+
+    return render(request, 'send_invitation.html', {'invitation_form': invitation_form, 'team': team})
 
 @login_prohibited
 def home(request):
@@ -57,18 +131,10 @@ def assignUsers(request):
     for user in users:
         Assigned.objects.create(user=user, task=task)
 
-##def updateTaskInformation(request):
-##    if request.method == "POST":
-##        form = UpdateTaskFormInformation(request.POST)
-##        if form.is_valid():
-##            TaskInformation.objects.create{
-##                information=form.cleaned_data.get('information'),
-##                }
-##            return redirect("dashboard")
-##    else:
-##        form = UpdateTaskFormInformation()
-##    return render(request, "update_task_information.html", ("form": form))        
-        
+def updateTaskInformation(request):
+    form = UpdateTaskFormInformation()
+    return render(request, 'update_task_information.html', {'form': form})
+    
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
