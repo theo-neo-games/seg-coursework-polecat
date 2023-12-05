@@ -11,7 +11,9 @@ from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, TaskForm
 from tasks.forms import UpdateTaskFormInformation
 from tasks.helpers import login_prohibited
-from .models import Task, Assigned, User
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 
 @login_required
 def dashboard(request):
@@ -19,80 +21,6 @@ def dashboard(request):
 
     current_user = request.user
     return render(request, 'dashboard.html', {'user': current_user})
-    
-@login_required
-def manage_teams(request):
-    teams = Team.objects.filter(members=request.user)
-    invitations = TeamMember.objects.filter(user=request.user, team__isnull=True)
-
-    if request.method == 'POST':
-        team_form = TeamCreationForm(request.POST)
-        task_form = TaskCreationForm(request.POST)
-        invitation_form = InvitationForm(request.POST)
-
-        if team_form.is_valid():
-            team = team_form.save()
-            TeamMember.objects.create(user=request.user, team=team)
-            messages.success(request, f'Team "{team.name}" created successfully!')
-
-        elif task_form.is_valid():
-            task = task_form.save()
-            messages.success(request, f'Task "{task.name}" created successfully!')
-
-        elif invitation_form.is_valid():
-            team_id = invitation_form.cleaned_data['team_id']
-            team = Team.objects.get(pk=team_id)
-
-            recipient_username = invitation_form.cleaned_data['recipient_username']
-            recipient = User.objects.get(username=recipient_username)
-
-            if recipient not in team.members.all():
-                TeamMember.objects.create(user=recipient, team=team)
-                messages.success(request, f'Invitation sent to {recipient_username}!')
-
-            else:
-                messages.error(request, f'{recipient_username} is already a member of the team.')
-
-        else:
-            messages.error(request, 'Form submission failed. Please check your input.')
-
-        return redirect('manage_teams')
-
-    else:
-        team_form = TeamCreationForm()
-        task_form = TaskCreationForm()
-        invitation_form = InvitationForm()
-
-    return render(request, 'manage_teams.html', {
-        'teams': teams,
-        'invitations': invitations,
-        'team_form': team_form,
-        'task_form': task_form,
-        'invitation_form': invitation_form,
-    })
-
-@login_required
-def send_invitation(request, team_id):
-    team = Team.objects.get(pk=team_id)
-
-    if request.method == 'POST':
-        invitation_form = InvitationForm(request.POST)
-        if invitation_form.is_valid():
-            recipient_username = invitation_form.cleaned_data['recipient_username']
-            recipient = User.objects.get(username=recipient_username)
-
-            # Check if the recipient is not already a member of the team
-            if recipient not in team.members.all():
-                TeamMember.objects.create(user=recipient, team=team)
-                messages.success(request, f'Invitation sent to {recipient_username}!')
-                return redirect('manage_teams')
-            else:
-                messages.error(request, f'{recipient_username} is already a member of the team.')
-
-    else:
-        invitation_form = InvitationForm()
-
-    return render(request, 'send_invitation.html', {'invitation_form': invitation_form, 'team': team})
 
 @login_prohibited
 def home(request):
@@ -265,3 +193,93 @@ def taskManagement(request):
 
     current_user = request.user
     return render(request, 'task_management.html', {'user': current_user})
+
+def team(request):
+    """Display the team page."""
+
+    username_param = request.GET.get('username', None)
+
+    teams_for_user = find_teams_by_username(username_param)
+    return render(request, 'team.html', {'user': username_param, 'teams': teams_for_user})
+
+def new_team(request):
+    """Display the new team page."""
+
+    username_param = request.GET.get('username', None)
+    return render(request, 'new_team.html', {'user': username_param})
+
+def new_team_member(request):
+    """Display the new team member page."""
+
+    team_name = request.GET.get('team', None)
+    username = request.GET.get('username', None)
+    return render(request, 'new_team_member.html', {'teamname': team_name,'initial_user':username})
+
+def create_new_team(request):
+    username = request.GET.get('username', None)
+    teamname = request.GET.get('teamname', None)
+
+    # Create a new team entry or show a message if it already exists
+    response = create_team_entry(user_name=username, team_name=teamname)
+    if response:
+        # If response is not None, it means the team already exists
+        return response
+    redirect_url = f'/team/?username={username}'
+    return redirect(redirect_url)
+
+def send_invite(request):
+    username = request.GET.get('username', None)
+    teamname = request.GET.get('teamname', None)
+    initial_user = request.GET.get('initial_user', None)
+    response =   send_invite_by_username(user_name=username,team_name=teamname, initial_user=initial_user)
+    if response:
+        return response
+    redirect_url = f'/team/?username={initial_user}'
+    return redirect(redirect_url)
+
+def view_team_member(request):
+    """Display the team member page."""
+
+    team_name = request.GET.get('team', None)
+    users = find_users_by_team(team_name=team_name)
+    return render(request, 'view_team_member.html', {'users': users})
+
+def delete_team(request):
+    username = request.GET.get('username', None)
+    teamname = request.GET.get('team', None)
+    delete_entries_by_team_name(team_name=teamname)
+    teams_for_user = find_teams_by_username(username)
+    return render(request, 'team.html', {'user': username, 'teams': teams_for_user})
+
+def view_invites(request):
+    username = request.GET.get('username', None)
+    invites = find_invites_by_username(username=username)
+    return render(request, 'invites.html', {'user': username, 'invites': invites})
+
+def accept_invite(request):
+    inviteId = request.GET.get('invite_id', None)
+    invite =  find_invites_by_id(inviteId)
+    username = invite.username
+    teamname = invite.teamname
+    add_member(user_name=username , team_name=teamname)
+    delete_invite_by_id(inviteId)
+    redirect_url = f'/view_invites/?username={username}'
+    return redirect(redirect_url)
+
+
+def delete_invite(request):
+    inviteId = request.GET.get('invite_id', None)
+    invite =  find_invites_by_id(inviteId)
+    username = invite.username
+    delete_invite_by_id(inviteId)
+    redirect_url = f'/view_invites/?username={username}'
+    return redirect(redirect_url)
+
+def leave_team(request):
+    username = request.GET.get('username', None)
+    teamname = request.GET.get('team', None)
+    delete_team_by_name_and_user(team_name=teamname, username=username)
+    teams_for_user = find_teams_by_username(username)
+    return render(request, 'team.html', {'user': username, 'teams': teams_for_user})
+    
+         

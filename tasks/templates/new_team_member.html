@@ -59,14 +59,39 @@
 </head>
 <body>
 
-    <h2>Add User</h2>
+    <h2>Enter User Name</h2>
 
-    <form action="process_username.php" method="post">
+    <form id="userForm">
         <label for="username">User Name:</label>
         <input type="text" id="username" name="username" required>
         <br>
-        <button type="submit">Add User</button>
+        <button type="button" onclick="sendInvite()">Send Invite</button>
     </form>
+
+    <script>
+        function sendInvite() {
+            // Retrieve the team name from the form
+            var userName = document.getElementById("username").value;
+
+            // Validate the input (you may add more validation)
+            if (userName.trim() === "") {
+                alert("User Name cannot be empty");
+                return;
+            }
+
+           
+            sendInviteToUser('{{ teamname }}', userName, '{{initial_user}}');
+
+            // Redirect or perform additional actions as needed
+            
+        }
+
+        
+        function sendInviteToUser(teamName, user, initial_user) {
+            window.location.href = "{% url 'send_invite' %}?teamname=" + teamName + "&username=" + user +"&initial_user=" + initial_user;
+            console.log("Adding team member: " + user);
+        }
+    </script>
 
 </body>
 </html>
