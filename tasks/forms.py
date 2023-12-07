@@ -35,6 +35,16 @@ class UpdateTaskFormInformation(forms.ModelForm):
         model = Task
         fields = ['title', 'information', 'assignedUsers', 'dueDate']
 
+class UpdateTaskUser(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'information', 'assignedUsers', 'dueDate']
+
+class RemoveTask(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'information', 'assignedUsers', 'dueDate']
+
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 

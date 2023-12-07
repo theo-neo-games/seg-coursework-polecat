@@ -10,6 +10,8 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, TaskForm
 from tasks.forms import UpdateTaskFormInformation
+from tasks.forms import UpdateTaskUser
+from tasks.forms import RemoveTask
 from tasks.helpers import login_prohibited
 from .models import Task, Assigned, User
 
@@ -122,14 +124,20 @@ def viewTasks(request):
     tasks = Task.objects.all()
     return render(request, 'viewTasks.html', {'tasks': tasks})
 
-    
-
 def assignUsers(request):
     form = TaskForm(request.POST)
     users = form.cleaned_data.get('usersToAssign').split(',')
     task = Task.objects.get(title=form.cleaned_data.get('title'))
     for user in users:
         Assigned.objects.create(user=user, task=task)
+
+def updateTaskUser(request):
+    form = UpdateTaskUser()
+    return render(request, 'update_task_user.html', {'form': form})
+
+def deleteTask(request):
+    form = RemoveTask()
+    return render(request, 'remove_task.html', {'form': form})
 
 def updateTaskInformation(request):
     form = UpdateTaskFormInformation()
