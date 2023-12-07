@@ -33,7 +33,6 @@ urlpatterns = [
     path('changeTaskInformation/', views.updateTaskInformation, name = 'updateInformation'),
     path('changeTaskUser/', views.updateTaskUser, name = 'updateTaskUser'),
     path('deleteTask/', views.deleteTask, name = 'deleteTask'),
-    path("changeTaskInformation/", views.updateTaskInformation, name = "updateInformation"),
     path('team/',views.team, name='team'),
     path('new_team/',views.new_team, name = 'new_team'),
     path('new_team_member/',views.new_team_member, name = 'new_team_member'),

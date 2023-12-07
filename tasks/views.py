@@ -289,5 +289,3 @@ def leave_team(request):
     delete_team_by_name_and_user(team_name=teamname, username=username)
     teams_for_user = find_teams_by_username(username)
     return render(request, 'team.html', {'user': username, 'teams': teams_for_user})
-    
-         
