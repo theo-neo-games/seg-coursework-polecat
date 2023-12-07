@@ -64,6 +64,41 @@
         button:hover {
             background-color: #45a049;
         }
+
+        .view-members-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .view-members-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px; /* Adjust margin as needed */
+    }
+
+    /* Additional style for the buttons if desired */
+    .button-container button {
+        padding: 10px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .button-container button:hover {
+        background-color: #45a049;
+    }
+
     </style>
 </head>
 <body>
@@ -73,63 +108,62 @@
             <tr>
                 <th>Team Name</th>
                 <th class="center">Add Member</th>
+                <th class="center">View Team Members</th> 
+                <th class="center">Delete Team</th>
+                <th class="center">Leave Team</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Loop through teams -->
-            <tr>
-                <td>Team A</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team B</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team C</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team D</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team E</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team F</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team G</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team H</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team I</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
-            <tr>
-                <td>Team J</td>
-                <td class="center"><button class="add-member-btn" onclick="addMember()">+</button></td>
-            </tr>
+            {% for team in teams %}
+                <tr>
+                    <td>{{ team.team_name }}</td>
+                    <td class="center">
+                        {% if team.is_team_host %}
+                        <button class="add-member-btn" onclick="addMember('{{ team.team_name }}','{{ user }}')">+</button></td>
+                        {% endif %}
+                    <td class="center"><button class="view-members-btn" onclick="viewMembers('{{ team.team_name }}')">View</button></td>
+                    <td class="center">
+                        {% if team.is_team_host %}
+                            <button class="delete-team-btn" onclick="deleteTeam('{{ team.team_name }}','{{ user }}')">Delete</button>
+                        {% endif %}
+                    </td>
+                    <td class="center">
+                        <button class="leave-team-btn" onclick="leaveTeam('{{ team.team_name }}','{{ user }}')">Leave Team</button>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <button onclick="createTeam()">Create New Team</button>
+    <div class="button-container">
+        <button onclick="createTeam('{{ user }}')">Create New Team</button>
+        <button onclick="viewInvites('{{user}}')">Invites</button>
+    </div>
 
     <script>
-        function createTeam() {
-            window.location.href = "{% url 'new_team' %}";
-           
+        function createTeam(user) {
+            window.location.href = "{% url 'new_team' %}?username=" + user;
         }
 
-        function addMember() {
-            window.location.href = "{% url 'new_team_member' %}";
+        function addMember(teamName,user) {
+            window.location.href = "{% url 'new_team_member' %}?team=" + teamName+ "&username=" + user;
+        }
+
+        function viewMembers(teamName) {
+            window.location.href = "{% url 'view_team_member' %}?team=" + teamName;
+        }
+
+        function deleteTeam(teamName,user) {
+            window.location.href = "{% url 'delete_team' %}?team=" + teamName+ "&username=" + user;
+            console.log("Deleting team: " + teamName);
+        }
+
+        function viewInvites(user) {
+            window.location.href = "{% url 'view_invites' %}?username=" + user;
+        }
+
+        function leaveTeam(teamName, user) {
+            window.location.href = "{% url 'leave_team' %}?team=" + teamName+ "&username=" + user;
+            console.log("Leaving team: " + teamName);
         }
     </script>
 

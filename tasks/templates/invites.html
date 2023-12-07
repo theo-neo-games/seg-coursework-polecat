@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invites</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 70%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .accept-btn, .reject-btn {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 4px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .accept-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reject-btn {
+            background-color: #ff5555;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Invites for {{ user }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Team Name</th>
+            <th>Team Host Name</th>
+            <th>Accept Invite</th>
+            <th>Reject Invite</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invite in invites %}
+            <tr>
+                <td>{{ invite.teamname }}</td>
+                <td>{{ invite.teamhost_name }}</td>
+                <td>
+                    <button class="accept-btn" onclick="acceptInvite('{{ invite.id }}')">Accept Invite</button>
+                </td>
+                <td>
+                    <button class="reject-btn" onclick="rejectInvite('{{ invite.id }}')">Reject Invite</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function acceptInvite(inviteId) {
+        
+        window.location.href = "{% url 'accept_invite' %}?invite_id=" + inviteId;
+    }
+
+    function rejectInvite(inviteId) {
+        window.location.href = "{% url 'delete_invite' %}?invite_id=" + inviteId;
+        console.log("Rejecting invite: " + inviteId);
+    }
+</script>
+
+</body>
+</html>
