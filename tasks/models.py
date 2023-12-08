@@ -51,10 +51,18 @@ def get_user_by_username(username):
         return None
     
 class Task(models.Model):
+    class Priority (models.TextChoices):
+        HIGH = "H"
+        MEDIUM = "M"
+        LOW = "L"
     title = models.CharField(max_length=100)
     information = models.TextField(max_length=1000, blank=True)
     assignedUsers = models.ManyToManyField('User', through='Assigned')
-    dueDate = models.DateTimeField()
+    dueDate = models.DateField()
+    priority = models.CharField(
+        max_length=1,
+        choices=Priority.choices,
+        default=Priority.MEDIUM)
     
 class Assigned(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
