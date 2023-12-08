@@ -33,7 +33,13 @@ class TaskForm(forms.Form):
 class UpdateTaskFormInformation(forms.ModelForm):
     class Meta:
         model = Task
+        #creates error why?
         fields = ['title', 'information', 'assignedUsers', 'dueDate']
+
+##    title = forms.CharField(label='Task Name')
+##    information = forms.CharField(label='Task Information', widget=forms.Textarea())
+##    dueDate = forms.DateTimeField(label='Deadline')
+##    usersToAssign = forms.CharField(label='Assign Users (comma separated)')
 
 class UpdateTaskUser(forms.ModelForm):
     class Meta:

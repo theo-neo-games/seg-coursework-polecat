@@ -15,7 +15,8 @@ from tasks.forms import RemoveTask
 from tasks.helpers import login_prohibited
 from django.shortcuts import redirect
 from django.http import HttpResponse
-from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
+from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member
+from .models import delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 
 @login_required
 def dashboard(request):
@@ -60,15 +61,47 @@ def assignUsers(request):
         Assigned.objects.create(user=user, task=task)
 
 def updateTaskUser(request):
-    form = UpdateTaskUser()
+    if request.method == 'POST':
+        form = UpdateTaskUser(request.POST)
+        if form.is_valid():
+            title = form.get_cleaned_data('title')
+            updateTask = Task.objects.get(title)
+            newUsers = form.get_cleaned_data('users')
+            #update task users
+            updateTask['assignedUsers'] = newUsers
+
+            return redirect('dashboard')
+    else:
+        form = UpdateTaskUser()
     return render(request, 'update_task_user.html', {'form': form})
 
 def deleteTask(request):
-    form = RemoveTask()
+    if request.method == 'POST':
+        form = UpdateTaskUser(request.POST)
+        if form.is_valid():
+            title = form.get_cleaned_data('title')
+            updateTask = Task.objects.get(title)
+            #delete this task
+            updateTask.delete()
+            
+            return redirect('dashboard')
+    else:
+        form = RemoveTask()
     return render(request, 'remove_task.html', {'form': form})
 
 def updateTaskInformation(request):
-    form = UpdateTaskFormInformation()
+    if request.method == 'POST':
+        form = UpdateTaskUser(request.POST)
+        if form.is_valid():
+            title = form.get_cleaned_data('title')
+            updateTask = Task.objects.get(title)
+            #change info in this task
+            newInformation = form.get_cleaned_data('information')
+            updateTask['information'] = newInformation
+            
+            return redirect('dashboard')
+    else:
+        form = UpdateTaskFormInformation()
     return render(request, 'update_task_information.html', {'form': form})
     
 class LoginProhibitedMixin:
