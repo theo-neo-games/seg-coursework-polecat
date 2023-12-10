@@ -128,7 +128,9 @@
                         {% endif %}
                     </td>
                     <td class="center">
-                        <button class="leave-team-btn" onclick="leaveTeam('{{ team.team_name }}','{{ user }}')">Leave Team</button>
+                        {% if not team.is_team_host %}
+                            <button class="leave-team-btn" onclick="leaveTeam('{{ team.team_name }}','{{ user }}')">Leave Team</button>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -137,6 +139,7 @@
     <div class="button-container">
         <button onclick="createTeam('{{ user }}')">Create New Team</button>
         <button onclick="viewInvites('{{user}}')">Invites</button>
+        <button onclick="viewDashboard()">Dashboard</button>
     </div>
 
     <script>
@@ -164,6 +167,10 @@
         function leaveTeam(teamName, user) {
             window.location.href = "{% url 'leave_team' %}?team=" + teamName+ "&username=" + user;
             console.log("Leaving team: " + teamName);
+        }
+
+        function viewDashboard() {
+            window.location.href = "{% url 'dashboard' %}";
         }
     </script>
 

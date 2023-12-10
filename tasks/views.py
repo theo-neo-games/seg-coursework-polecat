@@ -10,6 +10,8 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, TaskForm
 from tasks.forms import UpdateTaskFormInformation
+from tasks.forms import UpdateTaskUser
+from tasks.forms import RemoveTask
 from tasks.helpers import login_prohibited
 from django.shortcuts import redirect
 from django.http import HttpResponse
@@ -103,14 +105,20 @@ def deleteTask(request):
 
     return redirect('viewTasks')
 
-    
-
 def assignUsers(request):
     form = TaskForm(request.POST)
     users = form.cleaned_data.get('usersToAssign').split(',')
     task = Task.objects.get(title=form.cleaned_data.get('title'))
     for user in users:
         Assigned.objects.create(user=user, task=task)
+
+def updateTaskUser(request):
+    form = UpdateTaskUser()
+    return render(request, 'update_task_user.html', {'form': form})
+
+def deleteTask(request):
+    form = RemoveTask()
+    return render(request, 'remove_task.html', {'form': form})
 
 def updateTaskInformation(request):
     form = UpdateTaskFormInformation()
@@ -334,5 +342,3 @@ def leave_team(request):
     delete_team_by_name_and_user(team_name=teamname, username=username)
     teams_for_user = find_teams_by_username(username)
     return render(request, 'team.html', {'user': username, 'teams': teams_for_user})
-    
-         
