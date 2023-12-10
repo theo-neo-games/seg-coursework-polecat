@@ -14,13 +14,28 @@ from tasks.helpers import login_prohibited
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
+from django.db.models import Q
 
 @login_required
+
 def dashboard(request):
     """Display the current user's dashboard."""
-
+    
     current_user = request.user
-    return render(request, 'dashboard.html', {'user': current_user})
+    
+    # Get all tasks related to the current user
+    user_tasks = Task.objects.filter(user=current_user)
+
+    # Search functionality
+    search_query = request.GET.get('search', '')
+    if search_query:
+        # If a search query is provided, filter tasks based on the task name
+        user_tasks = user_tasks.filter(title__icontains=search_query)
+
+    # Limit the number of displayed tasks to 7
+    limited_tasks = user_tasks[:7]
+
+    return render(request, 'dashboard.html', {'user': current_user, 'tasks': limited_tasks, 'search_query': search_query})
 
 @login_prohibited
 def home(request):
@@ -47,8 +62,46 @@ def newTask(request):
     return render(request, 'new_task.html', {'form': form})
 
 def viewTasks(request):
-    tasks = Task.objects.all()
-    return render(request, 'viewTasks.html', {'tasks': tasks})
+    order_by_options = {
+        'Completed first': 'completed',  # Replace 'completed' with the actual field for completion status
+        'Completed last': '-completed',
+        'Nearst due date': 'dueDate',
+        'Farest due date': '-dueDate',
+        'Title A-Z': 'title',
+        'Title Z-A': '-title',
+        'Most priority': 'priority',  # Replace 'priority' with the actual field for priority
+        'Least priority': '-priority',
+    }
+
+    selected_order_by = request.GET.get('order_by', 'default')  # 'default' is the default option
+
+    if selected_order_by in order_by_options:
+        order_by = order_by_options[selected_order_by]
+        tasks = Task.objects.all().order_by(order_by)
+    else:
+        # Handle the default case or any other custom logic here
+        tasks = Task.objects.all()
+
+    context = {
+        'tasks': tasks,
+        'selected_order_by': selected_order_by,
+    }
+
+    return render(request, 'viewTasks.html', context)
+
+
+
+def deleteTask(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        if task_id:
+            try:
+                task = Task.objects.get(pk=task_id)
+                task.delete()
+            except Task.DoesNotExist:
+                pass  # Handle the case where the task doesn't exist (optional)
+
+    return redirect('viewTasks')
 
     
 

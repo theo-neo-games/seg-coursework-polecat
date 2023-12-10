@@ -66,6 +66,20 @@
         padding: 1rem;
       }
 
+      .deleting_button {
+        background: #fff;
+        border: none;
+        color: #000; /* Set the desired text color */
+        cursor: pointer;
+        font-size: inherit; /* Use the default font size */
+        padding: 0; /* Remove padding to make it more compact */
+    }
+
+    .action{
+        width: 10px;
+        height: 2px;
+    }
+
 
 
     </style>
@@ -79,6 +93,7 @@
                     <th>Title</th>
                     <th>Information</th>
                     <th>Due Date</th>
+                    <th class="action">Action</th>  <!-- Added a new column for the delete button -->
                     <!-- Add more columns if needed -->
                 </tr>
             </thead>
@@ -88,11 +103,19 @@
                     <td>{{ task.title }}</td>
                     <td>{{ task.information }}</td>
                     <td>{{ task.dueDate }}</td>
+                    <td>
+                        <form method="post" action="{% url 'delete_task' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                            <button type="submit" class="deleting_button">Delete</button>
+                        </form>
+                    </td>
                     <!-- Add more columns if needed -->
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
     </div>
 </body>
 </html>

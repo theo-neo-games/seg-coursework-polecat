@@ -29,7 +29,7 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('task_management/', views.taskManagement, name = 'tasks'),
     path('new_task/', views.newTask, name='new_task'),
-    path('view_tasks/', views.viewTasks, name='view_tasks'),
+    path('viewTasks/', views.viewTasks, name='viewTasks'),
     path("changeTaskInformation/", views.updateTaskInformation, name = "updateInformation"),
     path('team/',views.team, name='team'),
     path('new_team/',views.new_team, name = 'new_team'),
@@ -42,4 +42,5 @@ urlpatterns = [
     path('delete_invite/',views.delete_invite,name = 'delete_invite'),
     path('accept_invite/',views.accept_invite,name = 'accept_invite'),
     path('leave_team/',views.leave_team,name  = 'leave_team'),
+    path('delete_task/', views.deleteTask, name='delete_task'),
 ]

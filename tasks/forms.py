@@ -29,7 +29,7 @@ class TaskForm(forms.Form):
     information = forms.CharField(label='Task Information', widget=forms.Textarea())
     dueDate = forms.DateTimeField(label='Deadline')
     usersToAssign = forms.CharField(label='Assign Users (comma separated)')
-
+  
 class UpdateTaskFormInformation(forms.ModelForm):
     class Meta:
         model = Task
