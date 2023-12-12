@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.http import HttpResponse
+from django.utils import timezone
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -77,6 +78,40 @@ class Assigned(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     #information = models.ForeignKey(TaskInformation, on_delete=models.CASCADE)
+
+class New_Task(models.Model):
+    title = models.CharField(max_length=100, unique=True, primary_key=True)
+    information = models.TextField(max_length=1000, blank=True)
+    dueDate = models.DateTimeField()
+    priority = models.CharField(max_length=100,blank=False)
+    status = models.CharField(
+        max_length=100,  # adjust the max length based on your status values
+        default='Not Started'
+    )
+
+class Task_dependency(models.Model):
+    id = models.AutoField(primary_key=True)
+    task_title = models.CharField(max_length=100)
+    dependency_task = models.CharField(max_length=100)
+
+class User_Task(models.Model):
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=255)
+    task_title = models.CharField(max_length=100)
+
+class Time_Log(models.Model):
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=255)
+    task_title = models.CharField(max_length=100)
+    duration_minutes = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+
+class Team_Task(models.Model):
+    id = models.AutoField(primary_key=True)
+    teamname = models.CharField(max_length=255)
+    task_title = models.CharField(max_length=100)
+
 
 class Team_New(models.Model):
     id = models.AutoField(primary_key=True)
@@ -182,3 +217,22 @@ def send_invite_by_username(user_name , team_name , initial_user):
         # User does not exist, return an HTTP response
         return HttpResponse(f'User with username {user_name} does not exist', status=404)
     
+def find_team_task_by_teamname(teamname):
+    team_tasks = Team_Task.objects.filter(teamname = teamname)
+    return team_tasks
+
+def find_task_by_title(title):
+    tasks = New_Task.objects.filter(title = title)
+    return tasks
+
+def find_user_task_by_username(username):
+    user_tasks = User_Task.objects.filter(username = username)
+    return user_tasks
+
+def find_dependency_by_task_title (title):
+    dependency = Task_dependency.objects.filter(task_title = title)
+    return dependency
+
+def find_assigned_members_by_title (title):
+    assigned_members = User_Task.objects.filter(task_title = title)
+    return assigned_members

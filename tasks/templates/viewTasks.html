@@ -6,116 +6,212 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Tasks</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-    
-    * {
-        background-color: #ebe9e9;
-    }
-   
-        table{
-        width: 70%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        background-color: #fff;
-      }
+        /* Custom Styles for View Tasks Page */
 
-      table thead td{
-        font-weight: 600;
-        background-color: #fff;
-      }
+        body {
+            background-color: #f8f9fa;
+        }
 
-      table tr{
-        color: var(--black1);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-      }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
 
-      table tr:last-child{
-        border-bottom: none;
-        background-color: #fff;
-      }
+        /* Style for User Tasks Table */
+        h2 {
+            margin-top: 20px;
+        }
 
-      table tbody tr:hover{
-        background: #5F9EA0;
-        color: #fff;
-      }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
 
-      table tr td{
-        padding: 10px;
-        background-color: #fff;
-      }
-      table tr td:last-child{
-        text-align: end;
-        background-color: #fff;
-      }
+        /* Style for Team Selection Dropdown */
+        .form-group {
+    margin-top: 20px;
+    position: relative;
+}
 
-      table tr td:nth-child(2){
-        text-align: end; 
-        background-color: #fff;
-      }
+#teamSelect {
+    width: 200px;
+    z-index: 1; /* Ensure the dropdown is above other elements */
+}
 
-      table tr td:nth-child(3){
-        text-align: center; 
-        background-color: #fff;
-      }
-
-      .main--container{
-        position: relative;
-        background: #ebe9e9;
-        width: 100%;
-        padding: 1rem;
-      }
-
-      .deleting_button {
-        background: #fff;
-        border: none;
-        color: #000; /* Set the desired text color */
-        cursor: pointer;
-        font-size: inherit; /* Use the default font size */
-        padding: 0; /* Remove padding to make it more compact */
-    }
-
-    .action{
-        width: 10px;
-        height: 2px;
-    }
-
-
-
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>View Tasks</h1>
-    <div class="main--container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Information</th>
-                    <th>Due Date</th>
-                    <th class="action">Action</th>  <!-- Added a new column for the delete button -->
-                    <!-- Add more columns if needed -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in tasks %}
-                <tr>
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.information }}</td>
-                    <td>{{ task.dueDate }}</td>
-                    <td>
-                        <form method="post" action="{% url 'delete_task' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="task_id" value="{{ task.id }}">
-                            <button type="submit" class="deleting_button">Delete</button>
-                        </form>
-                    </td>
-                    <!-- Add more columns if needed -->
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-    </div>
+
+<div class="container mt-4">
+
+    <!-- User Tasks Table -->
+    <h2>User Tasks</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Task Title</th>
+            <th>Task Information</th>
+            <th>Priority</th>
+            <th>Dependencies</th>
+            <th>Due Date</th>
+            <th>Time Log</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Iterate over user tasks and populate the table -->
+        {% for task in all_tasks_for_user %}
+    <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.information }}</td>
+        <td>{{ task.priority }}</td>
+        <td><button class="btn btn-info" onclick="viewDependencies('{{ task.title }}')">View Dependencies</button></td>
+        <td>{{ task.dueDate }}</td>
+        <td><button class="btn btn-info" onclick="viewTimeLog('{{ task.title }}','{{ username }}')">View Time Log</button></td>
+        <td>
+            <!-- Add a dropdown for task status -->
+            <select class="form-control" onchange="updateTaskStatus('{{ task.title }}', this.value, '{{ username }}')">
+                <option value="Not Started" {% if task.status == 'Not Started' %}selected{% endif %}>Not Started</option>
+                <option value="Working on it" {% if task.status == 'Working on it' %}selected{% endif %}>Working on it</option>
+                <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+            </select>
+        </td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+
+    <!-- Team Tasks Table -->
+    
+    <h2>Team Tasks</h2>
+<!-- Team selection dropdown -->
+<div class="form-group">
+    <label for="teamSelect">Select Team:</label>
+    <select class="form-control" id="teamSelect" onchange="updateTasks()">
+        <!-- Iterate over teams and populate the dropdown options -->
+        {% for team in teams %}
+            <option value="{{ team.team_name }}">{{ team.team_name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title of Tasks</th>
+            <th>Assigned To</th>
+            <th>Status of Task</th>
+            <th>Due Date</th>
+        </tr>
+    </thead>
+    <tbody id="taskTableBody">
+        <!-- Tasks will be dynamically populated here -->
+    </tbody>
+</table>
+
+<script>
+    function updateTasks() {
+        var selectedTeam = document.getElementById("teamSelect").value;
+
+        // Make an asynchronous request to fetch tasks for the selected team
+        fetch('/get_tasks_for_team/' + selectedTeam)
+            .then(response => response.json())
+            .then(data => {
+                // Update the table body with the fetched tasks
+                var taskTableBody = document.getElementById("taskTableBody");
+                taskTableBody.innerHTML = ""; // Clear existing tasks
+
+                data.forEach(task => {
+                    var row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${task.title}</td>
+                        <td><button class="btn btn-info" onclick="viewAssignedMembers('${task.title}')">View Assigned Members</button></td>
+                        <td>${task.status}</td>
+                        <td>${task.dueDate.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</td>
+                    `;
+                    taskTableBody.appendChild(row);
+                });
+            });
+    }
+
+    // Initial update on page load
+    document.addEventListener("DOMContentLoaded", updateTasks);
+</script>
+
+
+<!-- Include Bootstrap JS (popper.js and jquery are required) -->
+<!-- Assuming task.dueDate is a string representation of a date -->
+<script>
+    const formattedDate = new Date(task.dueDate).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
+    document.write(`<td>${formattedDate}</td>`);
+  </script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+function viewDependencies(taskTitle) {
+    window.location.href = "{% url 'view_dependencies' %}?task_title=" + taskTitle;
+}
+
+function viewAssignedMembers(taskTitle) {
+    window.location.href = "{% url 'view_assigned_members' %}?task_title=" + taskTitle;
+}
+</script>
+
+<script>
+   function updateTaskStatus(taskTitle, selectedStatus, username) {
+    fetch('/update_task_status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'  // Add CSRF token if needed
+        },
+        body: JSON.stringify({
+            taskTitle: taskTitle,
+            selectedStatus: selectedStatus,
+            username: username
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Task status updated successfully');
+            // Optionally, you can update the UI to reflect the new status
+        } else {
+            alert(`Task status cannot be updated`);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating task status:', error);
+    });
+}
+</script>
+
+<script>
+    function viewTimeLog(title , username) {
+        // Construct the URL using the provided title and username
+        var url = `/view_time_log/${encodeURIComponent(title)}/${encodeURIComponent(username)}/`;
+
+        // Redirect to the constructed URL
+        window.location.href = url;
+    }
+</script>
+
+
 </body>
 </html>
+
+

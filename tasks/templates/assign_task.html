@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Task</title>
+    <!-- Add any additional styles or scripts you need -->
+    <style>
+       body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    color: #333;
+}
+
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+select[multiple] {
+    height: auto;
+}
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+    </style>
+
+    <!-- Add the Select2 library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+</head>
+<body>
+
+<h2>Assign Task for Team: {{ teamname }}</h2>
+
+<form method="post" action="{% url 'handle_task_submission' %}">
+    {% csrf_token %}
+    
+    <input type="hidden" id="teamname" name="teamname" value="{{ teamname }}">
+    <label for="task_name">Task Name:</label>
+    <input type="text" id="task_name" name="task_name" required>
+    
+    <label for="task_info">Task Info:</label>
+    <textarea id="task_info" name="task_info" rows="4" required></textarea>
+
+    <label for="assign_user">Assign User:</label>
+<select id="assign_user" name="assign_user" multiple>
+    {% for user in users %}
+        <option value="{{ user.username }}">{{ user.username }}</option>
+    {% endfor %}
+</select>
+
+<label for="dependencies">Dependencies:</label>
+<select id="dependencies" name="dependencies" multiple>
+    {% for task in tasks %}
+        <option value="{{ task.task_title }}">{{ task.task_title }}</option>
+    {% endfor %}
+</select>
+
+    <label for="due_date">Due Date:</label>
+    <input type="datetime-local" id="due_date" name="due_date" required 
+           min="{{ current_datetime | date:'Y-m-d\TH:i:s' }}">
+
+    <label for="priority">Priority:</label>
+    <select id="priority" name="priority">
+        <option value="high">High Priority</option>
+        <option value="mid">Mid Priority</option>
+        <option value="low">Low Priority</option>
+    </select>
+
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Add the Select2 script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    // Apply Select2 to the assign_user select element
+    $(document).ready(function () {
+        $('#assign_user').select2();
+    });
+</script>
+
+</body>
+</html>
+

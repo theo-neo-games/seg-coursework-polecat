@@ -110,7 +110,8 @@
                 <th class="center">Add Member</th>
                 <th class="center">View Team Members</th> 
                 <th class="center">Delete Team</th>
-                <th class="center">Leave Team</th>
+                
+                <th class="center">Assign Task</th>
             </tr>
         </thead>
         <tbody>
@@ -128,8 +129,8 @@
                         {% endif %}
                     </td>
                     <td class="center">
-                        {% if not team.is_team_host %}
-                            <button class="leave-team-btn" onclick="leaveTeam('{{ team.team_name }}','{{ user }}')">Leave Team</button>
+                        {% if team.is_team_host %}
+                            <button class="assign-task-btn" onclick="assignTask('{{ team.team_name }}')">Assign Task</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -171,6 +172,10 @@
 
         function viewDashboard() {
             window.location.href = "{% url 'dashboard' %}";
+        }
+
+        function assignTask(teamName) {
+            window.location.href = "{% url 'assign_task' %}?team=" + teamName;
         }
     </script>
 

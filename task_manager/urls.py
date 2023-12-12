@@ -48,4 +48,13 @@ urlpatterns = [
     path('task_information/<int:task_id>/', views.task_information, name='task_information'),
     path('update_task_status/<int:task_id>/', views.update_task_status, name='update_task_status'),
     path('view_team_members/<int:task_id>/', views.view_team_members, name='view_team_members'),
+    path('assign_task/',views.assign_task,name = 'assign_task'),
+    path('handle_task_submission/', views.handle_task_submission, name='handle_task_submission'),
+    path('view_dependencies/',views.view_dependencies,name = 'view_dependencies'),
+    path('view_assigned_members/',views.view_assigned_members, name = 'view_assigned_members'),
+    path('get_tasks_for_team/<str:team_name>/', views.get_tasks_for_team, name='get_tasks_for_team'),
+    path('update_task_status/<str:task_title>/', views.update_task_status, name='update_task_status'),
+    path('update_task_status/', views.update_task_status, name='update_task_status'),
+    path('view_time_log/<str:title>/<str:username>/', views.viewTimeLog, name='view_time_log'),
+
 ]
