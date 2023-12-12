@@ -13,6 +13,9 @@ from tasks.forms import UpdateTaskFormInformation
 from tasks.helpers import login_prohibited
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.http import JsonResponse
+import json
+from datetime import datetime
 from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 from django.db.models import Q
 from tasks.forms import TaskInformationForm
@@ -22,6 +25,8 @@ from django.db.models import F
 from django.db.models.functions import Lower
 from django.utils import timezone
 from datetime import datetime, timedelta
+from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
+
 
 @login_required
 
@@ -31,7 +36,7 @@ def dashboard(request):
     current_user = request.user
     
     # Get all tasks related to the current user
-    user_tasks = Task.objects.filter(user=current_user)
+    user_tasks = find_user_task_by_username(current_user)
 
     # Sorting options
     sort_option = request.GET.get('sort', 'default')
@@ -51,7 +56,11 @@ def dashboard(request):
         user_tasks = user_tasks.order_by('priority')
     elif sort_option == 'low_priority_first':
         user_tasks = user_tasks.order_by('-priority')
-    
+        all_tasks_for_user = [] # List to store all tasks corresponding to user
+    for user_task in user_tasks:
+        tasks_for_user = find_task_by_title(title=user_task.task_title)
+        all_tasks_for_user.extend(tasks_for_user)
+
     # Search functionality
     search_query = request.GET.get('search', '')
     if search_query:
@@ -73,7 +82,7 @@ def dashboard(request):
 
    
     # Limit the number of displayed tasks to 7
-    limited_tasks = user_tasks[:7]
+    limited_tasks = all_tasks_for_user[:3]
 
     # Filter tasks for the timeline (high priority and close due dates)
     timeline_tasks = user_tasks.filter(priority='H', dueDate__lte=datetime.now() + timedelta(days=3)).order_by('dueDate')[:3]
@@ -119,8 +128,35 @@ def newTask(request):
         form = TaskForm()
     return render(request, 'new_task.html', {'form': form})
 def viewTasks(request):
-    tasks = Task.objects.all()
-    return render(request, 'viewTasks.html', {'tasks': tasks})
+   current_user = request.user
+   teams = find_teams_by_username(current_user)
+   team_tasks = []
+   if len(teams) > 0:
+    team_tasks_1 = find_team_task_by_teamname(teamname=teams[0].team_name)
+    team_tasks.extend(team_tasks_1)
+    
+   all_tasks_for_team = []  # List to store all tasks corresponding to team_tasks
+
+   for team_task in team_tasks:
+        tasks_for_team = find_task_by_title(title=team_task.task_title)
+        all_tasks_for_team.extend(tasks_for_team)
+   user_tasks = find_user_task_by_username(current_user)
+   all_tasks_for_user = [] # List to store all tasks corresponding to user
+   for user_task in user_tasks:
+        tasks_for_user = find_task_by_title(title=user_task.task_title)
+        all_tasks_for_user.extend(tasks_for_user)
+    
+   print("Team Names:", [team.team_name for team in teams])
+   context = {
+        'all_tasks_for_user': all_tasks_for_user,
+        'all_tasks_for_team': all_tasks_for_team,
+        'teams': teams,
+        'username' : current_user,
+    }
+
+   return render(request, 'viewTasks.html', context)
+
+
 
 def deleteTask(request):
     if request.method == 'POST':
@@ -387,3 +423,160 @@ def view_team_members(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     team_members = task.assignedUsers.all()  # Fetch the assigned users for the task
     return render(request, 'view_team_members.html', {'users': team_members})
+
+def assign_task(request):
+    teamname = request.GET.get('team', None)
+    users = find_users_by_team(team_name=teamname)
+    tasks = find_team_task_by_teamname(teamname=teamname)
+    return render(request, 'assign_task.html', {'users': users, 'teamname': teamname , 'tasks': tasks})
+
+def create_new_task(task_name, task_info, due_date, priority):
+    # Check if the task title already exists
+    if New_Task.objects.filter(title=task_name).exists():
+        return HttpResponse("Task with this title already exists.")
+
+    # Create a new entry in the New_Task table
+    new_task = New_Task(
+        title=task_name,
+        information=task_info,
+        dueDate=due_date,
+        priority=priority,
+    )
+    new_task.save()
+
+    # Return None if the task is created successfully
+    return None
+
+def create_task_dependencies(task_name, dependencies):
+    # Create entries in the Task_dependency table
+    for dependency in dependencies:
+            task_dependency = Task_dependency(
+                task_title = task_name,
+                dependency_task = dependency
+            )
+            task_dependency.save()
+
+def create_team_task(teamname, task_name):
+    # Create an entry in the Team_Task table
+    team_task = Team_Task(
+        teamname=teamname,
+        task_title=task_name
+    )
+    team_task.save()
+
+def create_user_tasks(assign_user, task_name):
+    # Create entries in the User_Task table for assigned users
+    for user in assign_user:
+        user_task = User_Task(
+            username=user,
+            task_title=task_name
+        )
+        user_task.save()
+
+def handle_task_submission(request):
+    if request.method == 'POST':
+        task_name = request.POST.get('task_name')
+        task_info = request.POST.get('task_info')
+        assign_user = request.POST.getlist('assign_user')
+        dependencies = request.POST.getlist('dependencies')
+        due_date_str = request.POST.get('due_date')
+        priority = request.POST.get('priority')
+        teamname = request.POST.get('teamname')
+
+         # Convert due_date_str to a datetime object
+        due_date = datetime.strptime(due_date_str, '%Y-%m-%dT%H:%M')
+
+        # Check if the due date is less than the current time
+        if due_date < datetime.now():
+            return HttpResponse("Due date cannot be in the past. Please choose a future date.")
+
+        # Call the functions to handle each task
+        response = create_new_task(task_name, task_info, due_date, priority)
+        
+        # Check if there is a response, and return it
+        if response:
+            return response
+        
+        create_task_dependencies(task_name, dependencies)
+        create_team_task(teamname, task_name)
+        create_user_tasks(assign_user, task_name)
+
+
+        return HttpResponse("Form submitted successfully!")
+    else:
+        # Handle GET requests or other methods as needed
+        return HttpResponse("Invalid request method")
+    
+def view_dependencies(request):
+    task_title = request.GET.get('task_title', None)
+    dependencies = find_dependency_by_task_title(task_title)
+    return render(request, 'view_dependencies.html', {'dependencies': dependencies, 'task_title': task_title})
+
+def view_assigned_members(request):
+    task_title = request.GET.get('task_title', None)
+    assigned_members = find_assigned_members_by_title(task_title)
+    return render(request, 'view_assigned_members.html', {'assigned_members': assigned_members, 'task_title': task_title})
+
+def get_tasks_for_team(request, team_name):
+    team_tasks = find_team_task_by_teamname(teamname=team_name)
+    all_tasks_for_team = []
+
+    for team_task in team_tasks:
+        tasks_for_team = find_task_by_title(title=team_task.task_title)
+        all_tasks_for_team.extend(tasks_for_team)
+
+    # Convert tasks to a format suitable for JSON response
+    tasks_data = [
+        {
+            'title': task.title,
+            'status': task.status,
+            'dueDate': task.dueDate,
+        }
+        for task in all_tasks_for_team
+    ]
+
+    return JsonResponse(tasks_data, safe=False)
+
+def update_task_status(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        task_title = data.get('taskTitle')
+        selected_status = data.get('selectedStatus')
+        username = data.get('username')
+
+        try:
+            task = New_Task.objects.get(title=task_title)
+            # Perform any additional checks here, e.g., user authorization
+
+            # Check if the selected status is "Completed" and if the dependencies are completed
+            if selected_status == 'Completed':
+                dependencies = Task_dependency.objects.filter(task_title=task_title)
+                for dependency in dependencies:
+                    dependency_task = dependency.dependency_task
+                    dependency_status = New_Task.objects.get(title=dependency_task).status
+                    if dependency_status != 'Completed':
+                        return JsonResponse({'success': False, 'error': f'Dependency task "{dependency_task}" is not completed'})
+
+            # Update the task status
+            task.status = selected_status
+            task.save()
+
+            return JsonResponse({'success': True})
+        except New_Task.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Task not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def viewTimeLog(request, title, username):
+    # Retrieve time log entries for the specified title and username
+    time_logs = Time_Log.objects.filter(task_title=title, username=username)
+
+    if request.method == 'POST':
+        # Handle the form submission to create a new time log entry
+        minutes_spent = request.POST.get('minutes_spent', 0)
+        Time_Log.objects.create(username=username, task_title=title, duration_minutes=minutes_spent)
+
+    return render(request, 'view_time_log.html', {'title': title, 'username': username, 'time_logs': time_logs})
+
