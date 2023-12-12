@@ -36,6 +36,10 @@ class UpdateTaskFormInformation(forms.ModelForm):
         model = Task
         fields = ['title', 'information', 'assignedUsers', 'dueDate', 'priority']
 
+class TaskInformationForm(forms.Form):
+    information = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}))
+
+
 class UpdateTaskUser(forms.ModelForm):
     class Meta:
         model = Task

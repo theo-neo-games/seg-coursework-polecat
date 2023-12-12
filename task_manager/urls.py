@@ -31,7 +31,7 @@ urlpatterns = [
     path('new_task/', views.newTask, name='new_task'),
     path('viewTasks/', views.viewTasks, name='viewTasks'),
     path('changeTaskInformation/', views.updateTaskInformation, name = 'updateInformation'),
-    path('changeTaskUser/', views.updateTaskUser, name = 'updateTaskUser'),
+
     path('deleteTask/', views.deleteTask, name = 'deleteTask'),
     path('team/',views.team, name='team'),
     path('new_team/',views.new_team, name = 'new_team'),
@@ -45,4 +45,7 @@ urlpatterns = [
     path('accept_invite/',views.accept_invite,name = 'accept_invite'),
     path('leave_team/',views.leave_team,name  = 'leave_team'),
     path('delete_task/', views.deleteTask, name='delete_task'),
+    path('task_information/<int:task_id>/', views.task_information, name='task_information'),
+    path('update_task_status/<int:task_id>/', views.update_task_status, name='update_task_status'),
+    path('view_team_members/<int:task_id>/', views.view_team_members, name='view_team_members'),
 ]

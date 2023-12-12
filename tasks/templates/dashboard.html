@@ -347,57 +347,7 @@
   
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-  width: 300px;
-  border-radius: 50px;
-  background-color:   rgb(26, 49, 87);
-  border: 1px solid var(--white);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  color: #fff;
-}
 
-.dropdown-text {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 1rem 1.5rem;
-  cursor: pointer;
-  color: rgb(255, 255, 255);
-}
-
-.dropdown-list {
-  display: none;
-  position: absolute;
-  top: 4rem;
-  left: 0;
-  width: 100%;
-  border-radius: 15px;
-  
-}
-
-.dropdown-list-item {
-  font-size: 0.9rem;
-  font-weight: 500;
-  border-radius: 15px;
-  padding: 1rem 0 1rem 1.5rem;
-  cursor: pointer;
-  transition: margin-left 0.2s ease, color 0.2s ease;
-  color: #000000;
-}
-
-.dropdown-list-item:hover {
-  margin-left: 0.5rem;
-  color: #696969;
-}
-
-.dropdown:hover .dropdown-list {
-        display: block;
-    }
 
 #list.show {
   max-height: 300px;
@@ -464,9 +414,34 @@
         margin-left: 5px; /* Adjust the margin between icons as needed */
     }
 
-    
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
 
+    .dropdown-text {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
 
+    .dropdown-list {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown:hover .dropdown-list {
+        display: block;
+    }
+
+    .dropdown-list-item {
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
 
     </style>
   </head>
@@ -529,20 +504,18 @@
           </div>
         
         <!--Here is the implementaion for the seconed container (Timeline) -->
-          <div class = "timeline--container">
-            <div class="header--title">
-                <h2>Timeline</h2>
-            </div>
-
-            {% for task in tasks %}
-              <div class="oneTask">
-                <div class="taskName">{{ task.title }}</div>
-                <i class="fas fa-info-circle" onclick="showTaskInfo('{{ task.information }}')"></i>
-                <i class="fa-solid fa-user-group"></i>
-              </div>
-              {% endfor %}
-            
+        <div class="timeline--container">
+          <div class="header--title">
+              <h2>Timeline</h2>
           </div>
+          {% for task in timeline_tasks %}
+              <div class="oneTask">
+                  <div class="taskName">{{ task.title }}</div>
+                  <i class="fas fa-info-circle" onclick="showTaskInfo('{{ task.information }}')"></i>
+                  <i class="fa-solid fa-user-group"></i>
+              </div>
+          {% endfor %}
+      </div>
         <!--Here is the implementaion for the third container (Tasks) -->
           <div class="details">
             <div class="tasks">
@@ -551,20 +524,21 @@
                   <!-- Dropdown start -->
                   <div class="dropdown">
                     <div id="drop-text" class="dropdown-text">
-                      <span id="span">Show All</span>
-                      <i id="icon" class="fa-solid fa-chevron-down"></i>
+                        <span id="span">Order by</span>
+                        <i id="icon" class="fa-solid fa-chevron-down"></i>
                     </div>
                     <ul id="list" class="dropdown-list">
-                      <li class="dropdown-list-item">Completed first</li>
-                      <li class="dropdown-list-item">Completed last</li>
-                      <li class="dropdown-list-item">Nearst due date</li>
-                      <li class="dropdown-list-item">Farest due date</li>
-                      <li class="dropdown-list-item">Title A-Z</li>
-                      <li class="dropdown-list-item">Title Z-A</li>
-                      <li class="dropdown-list-item">Most priority</li>
-                      <li class="dropdown-list-item">least priority</li>
+                        <li class="dropdown-list-item"><a href="?sort=completed_first">Completed first</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=completed_last">Completed last</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=nearest_due_date">Close due date</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=farest_due_date">Far due date</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=title_AtoZ">Title A-Z</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=title_ZtoA">Title Z-A</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=high_priority_first">High priority first</a></li>
+                        <li class="dropdown-list-item"><a href="?sort=low_priority_first">Low priority first</a></li>
+                        
                     </ul>
-                  </div>
+                </div>
                   <!-- Dropdown ends -->
             
                   <!-- Search box input start -->
@@ -575,8 +549,24 @@
                         <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
                       </div>
                     </form>
-                    <i class="fas fa-filter"></i>
                   </div>
+
+                  <div class="dropdown">
+                    <div id="drop-text" class="dropdown-text">
+                        <span id="span">Filter</span>
+                        <i id="icon" class="fas fa-filter"></i>
+                    </div>
+                    <ul id="list" class="dropdown-list">
+                        <!-- ... (existing items) -->
+                        <li class="dropdown-list-item"><a href="?filter=high_priority">High Priority</a></li>
+                        <li class="dropdown-list-item"><a href="?filter=med_priority">Medium Priority</a></li>
+                        <li class="dropdown-list-item"><a href="?filter=low_priority">Low Priority</a></li>
+                        <li class="dropdown-list-item"><a href="?filter=Completed">Completed</a></li>
+                        <li class="dropdown-list-item"><a href="?filter=Uncompleted">Uncompleted</a></li>
+
+                    </ul>
+                </div>
+
                   <!-- Search box input ends -->
                 </div>
               </div> 
@@ -584,23 +574,51 @@
               <table>
                 <thead>
                     <tr>
-                        <th>Title</th>
+                        <th><a href="?sort=title">Title</a></th>
+                        <th><a href="?sort=due_date">Due Date</a></th>
+                        <th><a href="?sort=priority">Priority</a></th>
+                        <th>Team</th>
                         <th>Information</th>
-                        <th>Due Date</th>
-                        <!-- Add more columns if needed -->
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for task in tasks %}
                     <tr>
                         <td>{{ task.title }}</td>
-                        <td>{{ task.information }}</td>
                         <td>{{ task.dueDate }}</td>
-                        <!-- Add more columns if needed -->
+                        <td>
+                          {% if task.priority == 'H' %}
+                              <i class="fas fa-flag" style="color: rgb(118, 15, 15);"></i>
+                          {% elif task.priority == 'M' %}
+                              <i class="fas fa-flag" style="color: rgb(163, 163, 17);"></i>
+                          {% elif task.priority == 'L' %}
+                              <i class="fas fa-flag" style="color: rgb(163, 228, 163);"></i>
+                          {% endif %}
+                          {{ task.priority }}
+                      </td>
+                        </td>
+                        <td>
+                            <a href="{% url 'view_team_members' task.id %}" class="team-link">
+                              <i class="fa-solid fa-user-group"></i>
+                            </a>
+                        </td>
+                        <td>
+                          <a href="{% url 'task_information' task.id %}" class="information-link">
+                              <span class="information-icon">ℹ️</span>
+                          </a>
+                      </td>
+                        <td>
+                            <form method="post" action="{% url 'update_task_status' task.id %}">
+                                {% csrf_token %}
+                                <input type="checkbox" name="status" {% if task.status == 'C' %}checked{% endif %} onchange="this.form.submit()">
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+          
             <div class="buttons-container">
               <a href="{% url 'viewTasks' %}" class="viewAllBtn">View Tasks</a>
               <a href="{% url 'new_task' %}" class="addNewTaskBtn">Create a New Task</a>

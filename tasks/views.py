@@ -10,13 +10,18 @@ from django.views.generic.edit import FormView, UpdateView
 from django.urls import reverse
 from tasks.forms import LogInForm, PasswordForm, UserForm, SignUpForm, TaskForm
 from tasks.forms import UpdateTaskFormInformation
-from tasks.forms import UpdateTaskUser
-from tasks.forms import RemoveTask
 from tasks.helpers import login_prohibited
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 from django.db.models import Q
+from tasks.forms import TaskInformationForm
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.db.models import F
+from django.db.models.functions import Lower
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 @login_required
 
@@ -28,16 +33,66 @@ def dashboard(request):
     # Get all tasks related to the current user
     user_tasks = Task.objects.filter(user=current_user)
 
+    # Sorting options
+    sort_option = request.GET.get('sort', 'default')
+    if sort_option == 'completed_first':
+        user_tasks = user_tasks.order_by('status', 'dueDate')
+    elif sort_option == 'completed_last':
+        user_tasks = user_tasks.order_by('-status', 'dueDate')
+    elif sort_option == 'nearest_due_date':
+        user_tasks = user_tasks.order_by('dueDate')
+    elif sort_option == 'farest_due_date':
+        user_tasks = user_tasks.order_by('-dueDate')
+    elif sort_option == 'title_AtoZ':
+        user_tasks = user_tasks.order_by(Lower('title'))
+    elif sort_option == 'title_ZtoA':
+        user_tasks = user_tasks.order_by(Lower('-title'))
+    elif sort_option == 'high_priority_first':
+        user_tasks = user_tasks.order_by('priority')
+    elif sort_option == 'low_priority_first':
+        user_tasks = user_tasks.order_by('-priority')
+    
     # Search functionality
     search_query = request.GET.get('search', '')
     if search_query:
         # If a search query is provided, filter tasks based on the task name
         user_tasks = user_tasks.filter(title__icontains=search_query)
 
+    # Filter options
+    filter_option = request.GET.get('filter', 'default')
+    if filter_option == 'high_priority':
+        user_tasks = user_tasks.filter(priority='H')
+    elif filter_option == 'med_priority':
+        user_tasks = user_tasks.filter(priority='M')
+    elif filter_option == 'low_priority':
+        user_tasks = user_tasks.filter(priority='L')
+    elif filter_option == 'completed':
+        user_tasks = user_tasks.filter(status='C')
+    elif filter_option == 'uncompleted':
+        user_tasks = user_tasks.filter(status='NC')
+
+   
     # Limit the number of displayed tasks to 7
     limited_tasks = user_tasks[:7]
 
-    return render(request, 'dashboard.html', {'user': current_user, 'tasks': limited_tasks, 'search_query': search_query})
+    # Filter tasks for the timeline (high priority and close due dates)
+    timeline_tasks = user_tasks.filter(priority='H', dueDate__lte=datetime.now() + timedelta(days=3)).order_by('dueDate')[:3]
+
+    return render(request, 'dashboard.html', {'user': current_user, 'tasks': limited_tasks, 'timeline_tasks': timeline_tasks, 'search_query': search_query, 'sort_option': sort_option})
+
+def filter_timeline_tasks(tasks):
+    # Filter tasks with close due date (e.g., due within the next 3 days)
+    close_due_date_tasks = [task for task in tasks if task.dueDate <= datetime.now() + timedelta(days=3)]
+
+    # Filter high priority tasks
+    high_priority_tasks = [task for task in close_due_date_tasks if task.priority == 'H']
+
+    # Sort tasks by due date
+    sorted_tasks = sorted(high_priority_tasks, key=lambda task: task.dueDate)
+
+    # Return the top 3 tasks
+    return sorted_tasks[:3]
+
 
 @login_prohibited
 def home(request):
@@ -53,6 +108,7 @@ def newTask(request):
                 title=form.cleaned_data.get('title'),
                 information=form.cleaned_data.get('information'),
                 dueDate=form.cleaned_data.get('dueDate'),
+                priority=form.cleaned_data.get('priority'),  # Add this line to set the priority
             )
             users = form.cleaned_data.get('usersToAssign').split(',')
             task = Task.objects.get(title=form.cleaned_data.get('title'))
@@ -62,36 +118,9 @@ def newTask(request):
     else:
         form = TaskForm()
     return render(request, 'new_task.html', {'form': form})
-
 def viewTasks(request):
-    order_by_options = {
-        'Completed first': 'completed',  # Replace 'completed' with the actual field for completion status
-        'Completed last': '-completed',
-        'Nearst due date': 'dueDate',
-        'Farest due date': '-dueDate',
-        'Title A-Z': 'title',
-        'Title Z-A': '-title',
-        'Most priority': 'priority',  # Replace 'priority' with the actual field for priority
-        'Least priority': '-priority',
-    }
-
-    selected_order_by = request.GET.get('order_by', 'default')  # 'default' is the default option
-
-    if selected_order_by in order_by_options:
-        order_by = order_by_options[selected_order_by]
-        tasks = Task.objects.all().order_by(order_by)
-    else:
-        # Handle the default case or any other custom logic here
-        tasks = Task.objects.all()
-
-    context = {
-        'tasks': tasks,
-        'selected_order_by': selected_order_by,
-    }
-
-    return render(request, 'viewTasks.html', context)
-
-
+    tasks = Task.objects.all()
+    return render(request, 'viewTasks.html', {'tasks': tasks})
 
 def deleteTask(request):
     if request.method == 'POST':
@@ -105,20 +134,14 @@ def deleteTask(request):
 
     return redirect('viewTasks')
 
+    
+
 def assignUsers(request):
     form = TaskForm(request.POST)
     users = form.cleaned_data.get('usersToAssign').split(',')
     task = Task.objects.get(title=form.cleaned_data.get('title'))
     for user in users:
         Assigned.objects.create(user=user, task=task)
-
-def updateTaskUser(request):
-    form = UpdateTaskUser()
-    return render(request, 'update_task_user.html', {'form': form})
-
-def deleteTask(request):
-    form = RemoveTask()
-    return render(request, 'remove_task.html', {'form': form})
 
 def updateTaskInformation(request):
     form = UpdateTaskFormInformation()
@@ -342,3 +365,25 @@ def leave_team(request):
     delete_team_by_name_and_user(team_name=teamname, username=username)
     teams_for_user = find_teams_by_username(username)
     return render(request, 'team.html', {'user': username, 'teams': teams_for_user})
+    
+
+def task_information(request, task_id):
+    task = Task.objects.get(id=task_id)
+    form = TaskInformationForm(initial={'information': task.information})
+    return render(request, 'task_information.html', {'form': form}) 
+
+
+def update_task_status(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == 'POST':
+        # Toggle the status when the checkbox is checked or unchecked
+        task.status = 'C' if request.POST.get('status') == 'on' else 'NC'
+        task.save()
+
+    return HttpResponse()
+
+def view_team_members(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    team_members = task.assignedUsers.all()  # Fetch the assigned users for the task
+    return render(request, 'view_team_members.html', {'users': team_members})
