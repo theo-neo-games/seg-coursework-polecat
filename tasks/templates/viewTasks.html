@@ -66,6 +66,7 @@
             <th>Priority</th>
             <th>Dependencies</th>
             <th>Due Date</th>
+            <th>Time Log</th>
             <th>Status</th>
         </tr>
     </thead>
@@ -78,6 +79,7 @@
         <td>{{ task.priority }}</td>
         <td><button class="btn btn-info" onclick="viewDependencies('{{ task.title }}')">View Dependencies</button></td>
         <td>{{ task.dueDate }}</td>
+        <td><button class="btn btn-info" onclick="viewTimeLog('{{ task.title }}','{{ username }}')">View Time Log</button></td>
         <td>
             <!-- Add a dropdown for task status -->
             <select class="form-control" onchange="updateTaskStatus('{{ task.title }}', this.value, '{{ username }}')">
@@ -196,6 +198,16 @@ function viewAssignedMembers(taskTitle) {
         console.error('Error updating task status:', error);
     });
 }
+</script>
+
+<script>
+    function viewTimeLog(title , username) {
+        // Construct the URL using the provided title and username
+        var url = `/view_time_log/${encodeURIComponent(title)}/${encodeURIComponent(username)}/`;
+
+        // Redirect to the constructed URL
+        window.location.href = url;
+    }
 </script>
 
 

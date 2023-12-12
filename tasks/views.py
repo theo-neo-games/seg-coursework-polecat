@@ -20,7 +20,7 @@ import json
 from datetime import datetime
 from .models import Task, Assigned, User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 from django.db.models import Q
-from .models import New_Task, Task_dependency, Team_Task, User_Task, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
+from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
 
 
 @login_required
@@ -493,4 +493,15 @@ def update_task_status(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def viewTimeLog(request, title, username):
+    # Retrieve time log entries for the specified title and username
+    time_logs = Time_Log.objects.filter(task_title=title, username=username)
+
+    if request.method == 'POST':
+        # Handle the form submission to create a new time log entry
+        minutes_spent = request.POST.get('minutes_spent', 0)
+        Time_Log.objects.create(username=username, task_title=title, duration_minutes=minutes_spent)
+
+    return render(request, 'view_time_log.html', {'title': title, 'username': username, 'time_logs': time_logs})
 

@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.http import HttpResponse
+from django.utils import timezone
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -88,6 +89,14 @@ class User_Task(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255)
     task_title = models.CharField(max_length=100)
+
+class Time_Log(models.Model):
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=255)
+    task_title = models.CharField(max_length=100)
+    duration_minutes = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
 
 class Team_Task(models.Model):
     id = models.AutoField(primary_key=True)
