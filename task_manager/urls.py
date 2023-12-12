@@ -45,4 +45,12 @@ urlpatterns = [
     path('accept_invite/',views.accept_invite,name = 'accept_invite'),
     path('leave_team/',views.leave_team,name  = 'leave_team'),
     path('delete_task/', views.deleteTask, name='delete_task'),
+    path('assign_task/',views.assign_task,name = 'assign_task'),
+    path('handle_task_submission/', views.handle_task_submission, name='handle_task_submission'),
+    path('view_dependencies/',views.view_dependencies,name = 'view_dependencies'),
+    path('view_assigned_members/',views.view_assigned_members, name = 'view_assigned_members'),
+    path('get_tasks_for_team/<str:team_name>/', views.get_tasks_for_team, name='get_tasks_for_team'),
+    path('update_task_status/<str:task_title>/', views.update_task_status, name='update_task_status'),
+    path('update_task_status/', views.update_task_status, name='update_task_status'),
+
 ]
