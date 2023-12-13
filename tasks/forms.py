@@ -27,14 +27,18 @@ class TaskForm(forms.Form):
         
     title = forms.CharField(label='Task Name')
     information = forms.CharField(label='Task Information', widget=forms.Textarea())
-    dueDate = forms.DateTimeField(label='Deadline')
+    dueDate = forms.DateField(label='Deadline', widget=forms.DateInput(attrs={'type': 'date'}))
     usersToAssign = forms.CharField(label='Assign Users (comma separated)')
+    priority = forms.ChoiceField(choices=Task.Priority.choices, label='Task Priority')
 
 class UpdateTaskFormInformation(forms.ModelForm):
     class Meta:
         model = Task
-        #creates error why?
-        fields = ['title', 'information', 'assignedUsers', 'dueDate']
+        fields = ['title', 'information', 'assignedUsers', 'dueDate', 'priority']
+
+class TaskInformationForm(forms.Form):
+    information = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}))
+
 
 ##    title = forms.CharField(label='Task Name')
 ##    information = forms.CharField(label='Task Information', widget=forms.Textarea())
