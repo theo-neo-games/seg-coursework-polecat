@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from tasks.models import User
+from tasks.models import User, Team_New
 
 class Command(BaseCommand):
     """Build automation command to unseed the database."""
@@ -9,4 +9,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Unseed the database."""
 
-        User.objects.filter(is_staff=False).delete()
+        User.objects.all().delete()
+        Team_New.objects.all().delete()
