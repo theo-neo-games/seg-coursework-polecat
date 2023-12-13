@@ -56,10 +56,6 @@ class Task(models.Model):
         HIGH = "H"
         MEDIUM = "M"
         LOW = "L"
-    class Status(models.TextChoices):
-        COMPLETED = "C", "Completed"
-        NOT_COMPLETED = "NC", "Not Completed"
-
     title = models.CharField(max_length=100)
     information = models.TextField(max_length=1000, blank=True)
     assignedUsers = models.ManyToManyField('User', through='Assigned')
@@ -68,11 +64,6 @@ class Task(models.Model):
         max_length=1,
         choices=Priority.choices,
         default=Priority.MEDIUM)
-    status = models.CharField(
-        max_length=2,
-        choices=Status.choices,
-        default=Status.NOT_COMPLETED
-    )
     
 class Assigned(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
@@ -82,7 +73,7 @@ class Assigned(models.Model):
 class New_Task(models.Model):
     title = models.CharField(max_length=100, unique=True, primary_key=True)
     information = models.TextField(max_length=1000, blank=True)
-    dueDate = models.DateTimeField()
+    dueDate = models.DateTimeField(max_length=1000, blank=True)
     priority = models.CharField(max_length=100,blank=False)
     status = models.CharField(
         max_length=100,  # adjust the max length based on your status values
