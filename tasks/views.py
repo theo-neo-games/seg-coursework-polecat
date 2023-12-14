@@ -14,12 +14,12 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 import json
+from datetime import datetime
 from .models import  User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 from django.db.models import Q
 from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
 from django.db.models.functions import Lower
-from datetime import datetime, timedelta
-
+from .forms import SortForm
 @login_required
 
 def dashboard(request):
@@ -28,54 +28,31 @@ def dashboard(request):
     current_user = request.user
     
     # Get all tasks related to the current user
-    user_tasks = New_Task.objects.filter(title=current_user.username)
-
-    # Sorting options
-    sort_option = request.GET.get('sort', 'default')
-    if sort_option == 'completed_first':
-        user_tasks = user_tasks.order_by('status', 'dueDate')
-    elif sort_option == 'completed_last':
-        user_tasks = user_tasks.order_by('-status', 'dueDate')
-    elif sort_option == 'nearest_due_date':
-        user_tasks = user_tasks.order_by('dueDate')
-    elif sort_option == 'farest_due_date':
-        user_tasks = user_tasks.order_by('-dueDate')
-    elif sort_option == 'title_AtoZ':
-        user_tasks = user_tasks.order_by(Lower('title'))
-    elif sort_option == 'title_ZtoA':
-        user_tasks = user_tasks.order_by(Lower('-title'))
-    elif sort_option == 'high_priority_first':
-        user_tasks = user_tasks.order_by('priority')
-    elif sort_option == 'low_priority_first':
-        user_tasks = user_tasks.order_by('-priority')
+    user_tasks = find_user_task_by_username(current_user)
+    all_tasks_for_user = [] # List to store all tasks corresponding to user
 
     # Search functionality
     search_query = request.GET.get('search', '')
     if search_query:
-        # If a search query is provided, filter tasks based on the task name
-        user_tasks = user_tasks.filter(title__icontains=search_query)
+        all_tasks_for_user = [task for task in all_tasks_for_user if search_query.lower() in task.title.lower()]
+    else:
+        for user_task in user_tasks:
+            tasks_for_user = find_task_by_title(title=user_task.task_title)
+            all_tasks_for_user.extend(tasks_for_user)
 
-    # Filter options
-    filter_option = request.GET.get('filter', 'default')
-    if filter_option == 'high_priority':
-        user_tasks = user_tasks.filter(priority='H')
-    elif filter_option == 'med_priority':
-        user_tasks = user_tasks.filter(priority='M')
-    elif filter_option == 'low_priority':
-        user_tasks = user_tasks.filter(priority='L')
-    elif filter_option == 'completed':
-        user_tasks = user_tasks.filter(status='C')
-    elif filter_option == 'uncompleted':
-        user_tasks = user_tasks.filter(status='NC')
+    #Sort functionality
+    form = SortForm(request.GET)
+    sort_option = form['sort_option'].value() if form.is_valid() else 'default'
+    if sort_option == 'due_date':
+        all_tasks_for_user = sorted(all_tasks_for_user, key=lambda x: x.dueDate)
+    elif sort_option == 'title':
+        all_tasks_for_user = sorted(all_tasks_for_user, key=lambda x: x.title)
+    elif sort_option == 'priority':
+        all_tasks_for_user = sorted(all_tasks_for_user, key=lambda x: x.priority)
 
-    # Limit the number of displayed tasks to 3
-    limited_tasks = user_tasks[:3]
-
-    # Filter tasks for the timeline (high priority and close due dates)
-    timeline_tasks = user_tasks.filter(priority='H', dueDate__lte=datetime.now() + timedelta(days=3)).order_by('dueDate')[:3]
-
-    return render(request, 'dashboard.html', {'user': current_user, 'tasks': limited_tasks, 'timeline_tasks': timeline_tasks, 'search_query': search_query, 'sort_option': sort_option})
-
+    # Limit the number of displayed tasks to 6
+    limited_tasks = all_tasks_for_user[:6]
+    return render(request, 'dashboard.html', {'user': current_user, 'tasks': limited_tasks, 'form': form})
 
 @login_prohibited
 def home(request):

@@ -73,7 +73,7 @@ class Assigned(models.Model):
 class New_Task(models.Model):
     title = models.CharField(max_length=100, unique=True, primary_key=True)
     information = models.TextField(max_length=1000, blank=True)
-    dueDate = models.DateTimeField(max_length=1000, blank=True)
+    dueDate = models.DateTimeField()
     priority = models.CharField(max_length=100,blank=False)
     status = models.CharField(
         max_length=100,  # adjust the max length based on your status values

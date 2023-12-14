@@ -11,7 +11,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="{% static 'custom.css' %}" rel="stylesheet">
 
-    
     <style>
       * {
         margin: 0;
@@ -22,9 +21,11 @@
         font-family: "Poppins", sans-serif;
         
       }
+
       body {
         display: flex;
       }
+
       .sidebar {
         position: sticky;
         top: 0;
@@ -113,12 +114,14 @@
         border-radius: 10px;
         color: rgb(34, 63, 111);
       }
+
       .header--wrapper img {
         width: 50px;
         height: 50px;
         cursor: pointer;
         border-radius: 50%;
       }
+
       .header--wrapper{
         display: flex;
         justify-content: space-between;
@@ -159,13 +162,39 @@
       .search--box i:hover{
         transform: scale(1.1);
       }
+      /*.tasks--container{
+        background-color:  rgb(119, 20, 23);
+        padding: 2rem;
+        border-radius: 10px;
+        width: 700px;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        padding: 10px 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .teams--container{
+        background-color:  rgb(119, 20, 23);
+        padding: 2rem;
+        border-radius: 10px;
+        width: 300px;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        padding: 10px 2rem;
+        margin-bottom: 1rem;
+      }*/
+
       .main--title{
         padding-bottom: 10px;
         font-size: 20px;
       }
+
       .icons{
         padding-left: 300px;
       }
+
       .details{
         position: relative;
         width: 60%;
@@ -173,7 +202,10 @@
         justify-content: space-between;
         grid-template-columns: 2fr 1fr;
         grid-gap: 30px;
+        
+        /*margin-top: 10px;*/
       }
+
       .details .tasks{
         position: relative;
         display: grid;
@@ -185,12 +217,14 @@
         background-color:  #fff;
         min-width: 700px;
       }
+
       .details .tasks-container{
         display: flex;
         justify-content: space-between;
         min-width: 100%;
 
       }
+
       .details .teams{
         position: relative;
         display: grid;
@@ -202,153 +236,12 @@
         background-color:  #fff;
         min-width: 400px;
       }
+
       .details .teams-container{
         display: flex;
         justify-content: space-between;
       }
-      .details table{
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        color:  rgb(26, 49, 87);
-      }
-      .details table thead td{
-        font-weight: 600;
-      }
-      .details .tasks table tr{
-        color: var(--black1);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      }
-      .details .tasks table tr:last-child{
-        border-bottom: none;
-      }
-      .details .tasks table tbody tr:hover{
-        background:rgb(26, 49, 87);
-        color: #fff;
-      }
-      .details .tasks table tr td{
-        padding: 10px;
-      }
-      .details .tasks table tr td:last-child{
-        text-align: end;
-      }
-      .details .tasks table tr td:nth-child(2){
-        text-align: end; 
-      }
-      .details .tasks table tr td:nth-child(3){
-        text-align: center; 
-      }
-      hr{
-        height: 1px;
-        width: 400px;
-        background-color: #D3D3D3;
-        border: none;
-        margin-top: 10px;
-        margin-bottom: 150px;
-      }
 
-      .search-bar {
-        display: flex;
-        align-items: center;
-        min-width: 100%;
-        background-color: #fff;
-        border-radius: 50px;
-        
-      }
-      #list.show {
-        max-height: 300px;
-      }
-      .search-box {
-        display: flex;
-        align-items: center;
-        
-        width: 100%;
-        
-      }
-      .search-box input {
-        padding: 1rem;
-        width: 100%;
-        font-size: 1rem;
-        font-weight: 500;
-        color: #000000;
-        border: 0;
-        outline: 0;
-      }
-      .search-box i {
-        font-size: 1.3rem;
-        cursor: pointer;
-      }
-      .search-box input::placeholder {
-        font-size: 1rem;
-        font-weight: 500;
-
-      }
-      .search{
-        display: flex;
-        justify-content: space-between;
-      }
-      .search-icon {
-          background-color: #fff;  /* Replace #your-color with the desired background color */
-          border: none;  /* Remove button border if needed */
-          padding: 5px;  /* Adjust padding as needed */
-          cursor: pointer;  /* Add pointer cursor for better user experience */
-      }
-      .oneTask {
-          text-align: center;
-          margin-bottom: 10px; /* Adjust the margin as needed */
-      }
-      .taskName {
-          font-weight: bold; /* Optional: Make the task name bold */
-          margin-bottom: 5px; /* Add space between the task name and buttons */
-      }
-      .oneTask i {
-          display: inline-block;
-          margin-left: 5px; /* Adjust the margin between icons as needed */
-      }
-      .dropdown {
-          position: relative;
-          display: inline-block;
-          width: 300px;
-          border-radius: 50px;
-          background-color:   rgb(26, 49, 87);
-          border: 1px solid var(--white);
-          box-shadow: var(--shadow);
-          cursor: pointer;
-          color: #fff;
-      }
-      .dropdown-text {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 1rem;
-          font-weight: 500;
-          padding: 1rem 1.5rem;
-          cursor: pointer;
-          color: rgb(255, 255, 255);
-        }
-      .dropdown-list {
-          display: none;
-          position: absolute;
-          background-color: #f9f9f9;
-          min-width: 160px;
-          box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-      }
-      .dropdown:hover .dropdown-list {
-          display: block;
-      }
-      .dropdown-list-item {
-          padding: 12px 16px;
-          text-decoration: none;
-          display: block;
-      }
-      .search-bar {
-          display: flex;
-          align-items: center;
-          min-width: 100%;
-          background-color: #fff;
-          border-radius: 50px;
-          
-      }
       .viewAllBtn{
         padding: 5px 10px;
         background:   rgb(26, 49, 87);
@@ -358,6 +251,7 @@
         width: 18%;
         
       }
+
       .addNewTaskBtn{
         padding: 5px 10px;
         background:   rgb(26, 49, 87);
@@ -366,189 +260,355 @@
         border-radius: 6px;
         width: 18%;
       }
-      .buttons-container {
+
+      .details table{
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        color:  rgb(26, 49, 87);
+      }
+
+      .details table thead td{
+        font-weight: 600;
+      }
+
+      .details .tasks table tr{
+        color: var(--black1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .details .tasks table tr:last-child{
+        border-bottom: none;
+      }
+
+      .details .tasks table tbody tr:hover{
+        background:rgb(26, 49, 87);
+        color: #fff;
+      }
+
+      .details .tasks table tr td{
+        padding: 10px;
+      }
+      .details .tasks table tr td:last-child{
+        text-align: end;
+      }
+
+      .details .tasks table tr td:nth-child(2){
+        text-align: end; 
+      }
+
+      .details .tasks table tr td:nth-child(3){
+        text-align: center; 
+      }
+
+      .top-priority{
+        padding: 2px 4px;
+        background: #B22222;
+        color: #fff;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .low-priority{
+        padding: 2px 4px;
+        background: #90EE90;
+        color: #fff;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .med-priority{
+        padding: 2px 4px;
+        background: #FFA500;
+        color: #fff;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      hr{
+        height: 1px;
+        width: 400px;
+        background-color: #D3D3D3;
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 150px;
+    }
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  min-width: 100%;
+  background-color: #fff;
+  border-radius: 50px;
+  
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  border-radius: 50px;
+  background-color:   rgb(26, 49, 87);
+  border: 1px solid var(--white);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  color: #fff;
+}
+
+.dropdown-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+}
+
+.dropdown-list {
+  display: none;
+  position: absolute;
+  top: 4rem;
+  left: 0;
+  width: 100%;
+  border-radius: 15px;
+  
+}
+
+.dropdown-list-item {
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 15px;
+  padding: 1rem 0 1rem 1.5rem;
+  cursor: pointer;
+  transition: margin-left 0.2s ease, color 0.2s ease;
+  color: #000000;
+}
+
+.dropdown-list-item:hover {
+  margin-left: 0.5rem;
+  color: #696969;
+}
+
+.dropdown:hover .dropdown-list {
+        display: block;
+    }
+
+#list.show {
+  max-height: 300px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  
+  width: 100%;
+  
+}
+
+.search-box input {
+  padding: 1rem;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #000000;
+  border: 0;
+  outline: 0;
+}
+
+.search-box i {
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.search-box input::placeholder {
+  font-size: 1rem;
+  font-weight: 500;
+
+}
+
+.buttons-container {
         display: flex;
         justify-content: space-between;
-        margin-top: 10px;  
-      }
-      
+        margin-top: 10px;  /* Adjust the margin as needed */
+    }
+.search{
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-icon {
+    background-color: #fff;  /* Replace #your-color with the desired background color */
+    border: none;  /* Remove button border if needed */
+    padding: 5px;  /* Adjust padding as needed */
+    cursor: pointer;  /* Add pointer cursor for better user experience */
+}
+
+.oneTask {
+        text-align: center;
+        margin-bottom: 10px; /* Adjust the margin as needed */
+    }
+
+    .taskName {
+        font-weight: bold; /* Optional: Make the task name bold */
+        margin-bottom: 5px; /* Add space between the task name and buttons */
+    }
+
+    .oneTask i {
+        display: inline-block;
+        margin-left: 5px; /* Adjust the margin between icons as needed */
+    }
+
+    
+
+
+
     </style>
   </head>
 
   <body>
-    <!--Here is the implementaion for the sidebar-->
-    <div class="sidebar">
-      <div class="logo"></div>
-      <ul class="menu">
-        <li class="active">
-          <a href="{% url 'dashboard' %}">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
+      <!--Here is the implementaion for the sidebar-->
+      <div class="sidebar">
+        <div class="logo"></div>
+        <ul class="menu">
+          <li class="active">
+            <a href="{% url 'dashboard' %}">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'profile' %}">
+              <i class="fas fa-user"></i>
+              <span>Profile</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'viewTasks' %}">
+              <i class="fas fa-chart-bar"></i>
+              <span>Tasks</span>
+            </a>
+          </li>
+          <li class= "manage-teams">
+            <a href="{% url 'team' %}?username={{user.username }}">
+              <i class="fa-solid fa-user-group"></i>
+              <span>Teams</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'password' %}">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li class= "logout">
+            <a href="{% url 'log_out' %}">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
           </a>
-        </li>
-        <li>
-          <a href="{% url 'profile' %}">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'viewTasks' %}">
-            <i class="fas fa-chart-bar"></i>
-            <span>Tasks</span>
-          </a>
-        </li>
-        <li class= "manage-teams">
-          <a href="{% url 'team' %}?username={{user.username }}">
-            <i class="fa-solid fa-user-group"></i>
-            <span>Teams</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'password' %}">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-          </a>
-        </li>
-        <li class= "logout">
-          <a href="{% url 'log_out' %}">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </a>
-        </li>
-      </ul>
-    </div>
+          </li>
+        </ul>
+      </div>
 
-    <!--Here is the implementaion for the first container that conatins the page title and the profile picture -->
-    
-    <div class = "main--container">
-        <div class="header--wrapper">
-          <div class="header--title">
-            <h4>Welcome {{user.username}}</h4>
-            <h2>Dashboard</h2>
-          </div>
-          <div class="user--info">
-            <img src="./image/img.jpg" alt=""/>
-          </div>
-        </div>
+      <!--Here is the implementaion for the first container that conatins the page title and the profile picture -->
       
-      <!--Here is the implementaion for the seconed container (Timeline) -->
-      <div class="timeline--container">
-        <div class="header--title">
-            <h2>Timeline</h2>
-        </div>
-        {% for task in timeline_tasks %}
-            <div class="oneTask">
+      <div class = "main--container">
+          <div class="header--wrapper">
+            <div class="header--title">
+              <h4>Welcome {{user.username}}</h4>
+              <h2>Dashboard</h2>
+            </div>
+            <div class="user--info">
+              <img src="./image/img.jpg" alt=""/>
+            </div>
+          </div>
+        
+        <!--Here is the implementaion for the seconed container (Timeline) -->
+          <div class = "timeline--container">
+            <div class="header--title">
+                <h2>Timeline</h2>
+            </div>
+
+            {% for task in tasks %}
+              <div class="oneTask">
                 <div class="taskName">{{ task.title }}</div>
                 <i class="fas fa-info-circle" onclick="showTaskInfo('{{ task.information }}')"></i>
                 <i class="fa-solid fa-user-group"></i>
-            </div>
-        {% endfor %}
-    </div>
-      <!--Here is the implementaion for the third container (Tasks) -->
-        <div class="details">
-          <div class="tasks">
-            <div class="tasks-container">
-              <div class="search-bar">
-                <!-- Dropdown start -->
-                <div class="dropdown">
-                  <div id="drop-text" class="dropdown-text">
-                      <span id="span">Order by</span>
-                      <i id="icon" class="fa-solid fa-chevron-down"></i>
-                  </div>
-                  <ul id="list" class="dropdown-list">
-                      <li class="dropdown-list-item"><a href="?sort=completed_first">Completed first</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=completed_last">Completed last</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=nearest_due_date">Close due date</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=farest_due_date">Far due date</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=title_AtoZ">Title A-Z</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=title_ZtoA">Title Z-A</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=high_priority_first">High priority first</a></li>
-                      <li class="dropdown-list-item"><a href="?sort=low_priority_first">Low priority first</a></li>
-                      
-                  </ul>
               </div>
-                <!-- Dropdown ends -->
-          
-                <!-- Search box input start -->
-                <div class="search-box">
-                  <form method="get" action="{% url 'dashboard' %}">
-                    <div class="search">
-                      <input type="text" id="search-input" name="search" placeholder="Search by task name..." value="{{ search_query }}" />
-                      <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
-                    </div>
-                  </form>
-                </div>
-
-                <div class="dropdown">
-                  <div id="drop-text" class="dropdown-text">
-                      <span id="span">Filter</span>
-                      <i id="icon" class="fas fa-filter"></i>
-                  </div>
-                  <ul id="list" class="dropdown-list">
-                      <!-- ... (existing items) -->
-                      <li class="dropdown-list-item"><a href="?filter=high_priority">High Priority</a></li>
-                      <li class="dropdown-list-item"><a href="?filter=med_priority">Medium Priority</a></li>
-                      <li class="dropdown-list-item"><a href="?filter=low_priority">Low Priority</a></li>
-                      <li class="dropdown-list-item"><a href="?filter=Completed">Completed</a></li>
-                      <li class="dropdown-list-item"><a href="?filter=Uncompleted">Uncompleted</a></li>
-                  </ul>
-              </div>
-
-                <!-- Search box input ends -->
-              </div>
-            </div> 
-
-            <table>
-              <thead>
-                  <tr>
-                      <th><a href="?sort=title">Title</a></th>
-                      <th><a href="?sort=due_date">Due Date</a></th>
-                      <th><a href="?sort=priority">Priority</a></th>
-                      <th>Team</th>
-                      <th>Information</th>
-                      <th>Status</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for task in tasks %}
-                  <tr>
-                      <td>{{ task.title }}</td>
-                      <td>{{ task.dueDate }}</td>
-                      <td>
-                        {% if task.priority == 'H' %}
-                            <i class="fas fa-flag" style="color: rgb(118, 15, 15);"></i>
-                        {% elif task.priority == 'M' %}
-                            <i class="fas fa-flag" style="color: rgb(163, 163, 17);"></i>
-                        {% elif task.priority == 'L' %}
-                            <i class="fas fa-flag" style="color: rgb(163, 228, 163);"></i>
-                        {% endif %}
-                        {{ task.priority }}
-                    </td>
-                      </td>
-                      <td>
-                          <a href="{% url 'view_team_members' task.id %}" class="team-link">
-                            <i class="fa-solid fa-user-group"></i>
-                          </a>
-                      </td>
-                      <td>
-                        <a href="{% url 'task_information' task.id %}" class="information-link">
-                            <span class="information-icon">ℹ️</span>
-                        </a>
-                    </td>
-                      <td>
-                          <form method="post" action="{% url 'update_task_status' task.id %}">
-                              {% csrf_token %}
-                              <input type="checkbox" name="status" {% if task.status == 'C' %}checked{% endif %} onchange="this.form.submit()">
-                          </form>
-                      </td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
+              {% endfor %}
+            
           </div>
-        </div>
-    </div>
-</body>
+        <!--Here is the implementaion for the third container (Tasks) -->
+          <div class="details">
+            <div class="tasks">
+              <div class="tasks-container">
+                <div class="search-bar">
+            
+                  <!-- Search box input start -->
+                  <div class="search-box">
+                    <form method="get" action="{% url 'dashboard' %}">
+                      <div class="search">
+                        <input type="text" id="search-input" name="search" placeholder="Search by task name..." value="{{ search_query }}" />
+                        <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
+                      </div>
+                    </form>
+                    <i class="fas fa-filter"></i>
+                  </div>
+                  <!-- Search box input ends -->
+                  <!-- Dropdown start -->
+                    <div class="dropdown">
+                      <div id="drop-text" class="dropdown-text">
+                          <span id="span">Sort by</span>
+                          <i id="icon" class="fa-solid fa-chevron-down"></i>
+                      </div>
+                      <ul id="list" class="dropdown-list">
+                          <li class="dropdown-list-item"><a href="?sort=default">Default</a></li>
+                          <li class="dropdown-list-item"><a href="?sort=due_date">Due Date</a></li>
+                          <li class="dropdown-list-item"><a href="?sort=title">Title A-Z</a></li>
+                          <li class="dropdown-list-item"><a href="?sort=priority">Priority</a></li>
+                          <!-- Add other sorting options as needed -->
+                      </ul>
+                    </div>
+                  <!-- Dropdown ends -->
+                  <div>
+                  <form method="get" action="{% url 'dashboard' %}" class="dropdown">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Apply Sort</button>
+                  </form>
+                  </div>
+                </div>
+              </div> 
+
+              <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Information</th>
+                        <th>Due Date</th>
+                        <!-- Add more columns if needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.information }}</td>
+                        <td>{{ task.dueDate }}</td>
+                        <!-- Add more columns if needed -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+          </div>
+
+          
+      </div>
+  </body>
 </html>
 {% endblock %}

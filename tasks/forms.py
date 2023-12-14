@@ -36,15 +36,6 @@ class UpdateTaskFormInformation(forms.ModelForm):
         model = Task
         fields = ['title', 'information', 'assignedUsers', 'dueDate', 'priority']
 
-class TaskInformationForm(forms.Form):
-    information = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}))
-
-
-##    title = forms.CharField(label='Task Name')
-##    information = forms.CharField(label='Task Information', widget=forms.Textarea())
-##    dueDate = forms.DateTimeField(label='Deadline')
-##    usersToAssign = forms.CharField(label='Assign Users (comma separated)')
-
 class UpdateTaskUser(forms.ModelForm):
     class Meta:
         model = Task
@@ -142,3 +133,13 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+class SortForm(forms.Form):
+    SORT_CHOICES = [
+        ('default', 'Default'),
+        ('due_date', 'Due Date'),
+        ('title', 'Title A-Z'),
+        ('priority', 'Priority')
+        # Add other sorting options as needed
+    ]
+
+    sort_option = forms.ChoiceField(choices=SORT_CHOICES, initial='default', required=False)
