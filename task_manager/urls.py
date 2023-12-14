@@ -39,7 +39,6 @@ urlpatterns = [
     path('view_invites/',views.view_invites,name = 'view_invites'),
     path('delete_invite/',views.delete_invite,name = 'delete_invite'),
     path('accept_invite/',views.accept_invite,name = 'accept_invite'),
-    path('leave_team/',views.leave_team,name  = 'leave_team'),
     path('assign_task/',views.assign_task,name = 'assign_task'),
     path('handle_task_submission/', views.handle_task_submission, name='handle_task_submission'),
     path('view_dependencies/',views.view_dependencies,name = 'view_dependencies'),

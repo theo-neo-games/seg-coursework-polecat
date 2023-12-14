@@ -1,7 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
+import datetime
 
-from tasks.models import User
-from tasks.models import Team_New
+from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
+
+from tasks.models import User, Team_New, New_Task, Team_Task
 
 import pytz
 from faker import Faker
@@ -53,10 +55,27 @@ class Command(BaseCommand):
         username = create_username(first_name, last_name)
         privileges = choice([0, 0, 0, 0, 0, 1, 1, 2])
         self.try_create_user({'username': username, 'email': email, 'first_name': first_name, 'last_name': last_name, 'user_tier': privileges, 'team_name': self.currentTeamName, 'is_team_host': not self.hostPicked})
+        # Stopping multiple hosts of the same team
         if not self.hostPicked:
             self.hostPicked = True
-        if randint(0, 10) == 0:
-            self.currentTeamName = "Team " + self.faker.word().title()
+        # Creating tasks for the current team and starting a new team
+        userCount = User.objects.count()
+        if randint(0, 10) == 0 or userCount >= self.USER_COUNT:
+            taskNumber = randint(1, 5)
+            for task in range(taskNumber):
+                taskNameFound = False
+                while not taskNameFound:
+                    taskName = self.faker.text(max_nb_chars=20)
+                    if not taskName in Team_Task.objects.filter(teamname=self.currentTeamName):
+                        taskNameFound = True
+                taskInfo = self.faker.text(max_nb_chars=100)
+                New_Task.objects.create(title=taskName, information=taskInfo, priority=choice(["H", "M", "L"]), dueDate=timezone.now() + datetime.timedelta(days=randint(1, 4)), status=choice(["Started", "Not Started", "Completed"]))
+                Team_Task.objects.create(teamname=self.currentTeamName, task_title=taskName)
+            newNameFound = False
+            while not newNameFound:
+                self.currentTeamName = "Team " + self.faker.word().title()
+                if not self.currentTeamName in Team_New.objects.all():
+                    newNameFound = True
             self.hostPicked = False
        
     def try_create_user(self, data):

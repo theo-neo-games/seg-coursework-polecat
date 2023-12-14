@@ -366,10 +366,34 @@ def delete_invite(request):
     redirect_url = f'/view_invites/?username={username}'
     return redirect(redirect_url)
 
-def leave_team(request):
+def delete_team(request):
     username = request.GET.get('username', None)
     teamname = request.GET.get('team', None)
-    delete_team_by_name_and_user(team_name=teamname, username=username)
+
+    # Find tasks corresponding to the team
+    team_tasks = Team_Task.objects.filter(teamname=teamname)
+
+    # Iterate through tasks and find associated user tasks
+    for team_task in team_tasks:
+        task_title = team_task.task_title
+
+        # Find user tasks corresponding to the task title
+        user_tasks = User_Task.objects.filter(task_title=task_title)
+
+        # Find and delete entries in New_Task model
+        new_tasks = New_Task.objects.filter(title=task_title)
+        new_tasks.delete()
+
+        # Find and delete entries in Task_dependency model (as task_title or dependency_task)
+        dependencies = Task_dependency.objects.filter(Q(task_title=task_title) | Q(dependency_task=task_title))
+        dependencies.delete()
+
+        # Delete user tasks
+        user_tasks.delete()
+
+    # Delete team tasks
+    team_tasks.delete()
+    delete_entries_by_team_name(team_name=teamname)
     teams_for_user = find_teams_by_username(username)
     return render(request, 'team.html', {'user': username, 'teams': teams_for_user})
 

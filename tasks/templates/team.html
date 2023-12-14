@@ -165,11 +165,6 @@
             window.location.href = "{% url 'view_invites' %}?username=" + user;
         }
 
-        function leaveTeam(teamName, user) {
-            window.location.href = "{% url 'leave_team' %}?team=" + teamName+ "&username=" + user;
-            console.log("Leaving team: " + teamName);
-        }
-
         function viewDashboard() {
             window.location.href = "{% url 'dashboard' %}";
         }
