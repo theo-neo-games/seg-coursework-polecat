@@ -227,3 +227,9 @@ def find_dependency_by_task_title (title):
 def find_assigned_members_by_title (title):
     assigned_members = User_Task.objects.filter(task_title = title)
     return assigned_members
+
+class TimeLog(models.Model):
+    username = models.CharField(max_length=255)
+    task_title = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    duration_minutes = models.IntegerField()

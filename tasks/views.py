@@ -14,12 +14,13 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 import json
-from datetime import datetime
+from datetime import datetime, date
 from .models import  User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 from django.db.models import Q
 from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
 from django.db.models.functions import Lower
 from .forms import SortForm
+from .models import TimeLog
 @login_required
 
 def dashboard(request):
@@ -458,10 +459,40 @@ def viewTimeLog(request, title, username):
     # Retrieve time log entries for the specified title and username
     time_logs = Time_Log.objects.filter(task_title=title, username=username)
 
+    # Initialize or retrieve the summary report
+    summary_report = calculate_summary_report(time_logs)
+
     if request.method == 'POST':
         # Handle the form submission to create a new time log entry
-        minutes_spent = request.POST.get('minutes_spent', 0)
+        minutes_spent = int(request.POST.get('minutes_spent', 0))
         Time_Log.objects.create(username=username, task_title=title, duration_minutes=minutes_spent)
 
-    return render(request, 'view_time_log.html', {'title': title, 'username': username, 'time_logs': time_logs})
+        # Update time logs after adding the new entry
+        time_logs = Time_Log.objects.filter(task_title=title, username=username)
+
+        # Update the summary report after adding the new entry
+        summary_report = calculate_summary_report(time_logs)
+
+    return render(request, 'view_time_log.html', {'title': title, 'username': username, 'time_logs': time_logs, 'summary_report': summary_report})
+
+def calculate_summary_report(time_logs):
+    # Calculate total time spent on each date and overall total time
+    summary_report = {}
+    overall_total_time = 0
+
+    for log in time_logs:
+        log_date = log.timestamp.date()
+        overall_total_time += log.duration_minutes
+
+        if log_date not in summary_report:
+            summary_report[log_date] = {'total_time': 0, 'logs': []}
+
+        summary_report[log_date]['total_time'] += log.duration_minutes
+        summary_report[log_date]['logs'].append({'timestamp': log.timestamp, 'duration_minutes': log.duration_minutes})
+
+    # Include overall total time in the summary report
+    summary_report['overall_total_time'] = overall_total_time
+
+    return summary_report
+
 
