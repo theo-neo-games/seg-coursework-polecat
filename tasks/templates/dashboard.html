@@ -546,7 +546,7 @@
           <div class="details">
             <div class="tasks">
               <div class="tasks-container">
-                <div class="search-bar">
+                
             
                   <!-- Search box input start -->
                   <div class="search-box">
@@ -556,11 +556,10 @@
                         <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
                       </div>
                     </form>
-                    <i class="fas fa-filter"></i>
-                  </div>
+  
                   <!-- Search box input ends -->
                   <!-- Dropdown start -->
-                    <div class="dropdown">
+            
                       <div id="drop-text" class="dropdown-text">
                           <span id="span">Sort by</span>
                           <i id="icon" class="fa-solid fa-chevron-down"></i>
@@ -572,7 +571,7 @@
                           <li class="dropdown-list-item"><a href="?sort=priority">Priority</a></li>
                           <!-- Add other sorting options as needed -->
                       </ul>
-                    </div>
+                    
                   <!-- Dropdown ends -->
                   <form method="get" action="{% url 'dashboard' %}">
                     <label for="filter">Filter by:</label>
