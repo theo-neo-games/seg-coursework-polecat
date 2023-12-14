@@ -20,7 +20,6 @@ from django.db.models import Q
 from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
 from django.db.models.functions import Lower
 from .forms import SortForm
-from .models import TimeLog
 @login_required
 
 def dashboard(request):

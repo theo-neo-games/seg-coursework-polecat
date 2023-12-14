@@ -89,13 +89,6 @@ class User_Task(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255)
     task_title = models.CharField(max_length=100)
-
-class Time_Log(models.Model):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=255)
-    task_title = models.CharField(max_length=100)
-    duration_minutes = models.IntegerField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True)
     
 
 class Team_Task(models.Model):
@@ -228,8 +221,9 @@ def find_assigned_members_by_title (title):
     assigned_members = User_Task.objects.filter(task_title = title)
     return assigned_members
 
-class TimeLog(models.Model):
+class Time_Log(models.Model):
+    id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255)
-    task_title = models.CharField(max_length=255)
+    task_title = models.CharField(max_length=100)
+    duration_minutes = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
-    duration_minutes = models.IntegerField()
