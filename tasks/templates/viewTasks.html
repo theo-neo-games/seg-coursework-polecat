@@ -51,11 +51,17 @@
     </style>
 </head>
 <body>
-
+    
 <div class="container mt-4">
-
+    <button onclick="navigateToDashboard()">Back to Dashboard</button>
     <!-- User Tasks Table -->
     <h2>User Tasks</h2>
+    <!-- Sorting Form -->
+    <form method="get" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sort</button>
+    </form>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -119,6 +125,7 @@
         <!-- Tasks will be dynamically populated here -->
     </tbody>
 </table>
+
 
 <script>
     function updateTasks() {
@@ -206,10 +213,12 @@ function viewAssignedMembers(taskTitle) {
         // Redirect to the constructed URL
         window.location.href = url;
     }
+
+        function navigateToDashboard() {
+            window.location.href = "{% url 'dashboard' %}";
+        }
 </script>
 
 
 </body>
 </html>
-
-

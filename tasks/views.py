@@ -21,34 +21,20 @@ from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, fi
 from django.db.models.functions import Lower
 from .forms import SortForm
 @login_required
+    
 
 def dashboard(request):
     """Display the current user's dashboard."""
-    
     current_user = request.user
-    
     # Get all tasks related to the current user
     user_tasks = find_user_task_by_username(current_user)
     all_tasks_for_user = [] # List to store all tasks corresponding to user
 
     # Search functionality
-    search_query = request.GET.get('search', '')
-    if search_query:
-        all_tasks_for_user = [task for task in all_tasks_for_user if search_query.lower() in task.title.lower()]
-    else:
-        for user_task in user_tasks:
-            tasks_for_user = find_task_by_title(title=user_task.task_title)
-            all_tasks_for_user.extend(tasks_for_user)
+    searchFunction(request, user_tasks, all_tasks_for_user)
 
     #Sort functionality
-    form = SortForm(request.GET)
-    sort_option = form['sort_option'].value() if form.is_valid() else 'default'
-    if sort_option == 'due_date':
-        all_tasks_for_user = sorted(all_tasks_for_user, key=lambda x: x.dueDate)
-    elif sort_option == 'title':
-        all_tasks_for_user = sorted(all_tasks_for_user, key=lambda x: x.title)
-    elif sort_option == 'priority':
-        all_tasks_for_user = sorted(all_tasks_for_user, key=lambda x: x.priority)
+    form = sortFunction(request, all_tasks_for_user)
 
     # Limit the number of displayed tasks to 6
     limited_tasks = all_tasks_for_user[:6]
@@ -60,6 +46,9 @@ def home(request):
 
     return render(request, 'home.html')
 
+def priority_order(priority):
+    order = {'H': 0, 'M': 1, 'L': 2}
+    return order.get(priority, float('inf'))  # Use float('inf') for unknown priorities
 
 def viewTasks(request):
    current_user = request.user
@@ -80,6 +69,15 @@ def viewTasks(request):
         tasks_for_user = find_task_by_title(title=user_task.task_title)
         all_tasks_for_user.extend(tasks_for_user)
     
+   current_user = request.user
+    
+    # Get all tasks related to the current user
+   user_tasks = find_user_task_by_username(current_user)
+   all_tasks_for_user = [] # List to store all tasks corresponding to user
+
+    # Search functionality
+   searchFunction(request, user_tasks, all_tasks_for_user)
+
    print("Team Names:", [team.team_name for team in teams])
    context = {
         'all_tasks_for_user': all_tasks_for_user,
@@ -87,9 +85,35 @@ def viewTasks(request):
         'teams': teams,
         'username' : current_user,
     }
+   
+   form = sortFunction(request, all_tasks_for_user)
+
+   context.update({'form': form, 'all_tasks_for_user': all_tasks_for_user})
 
    return render(request, 'viewTasks.html', context)
+
     
+def searchFunction(request, user_tasks, all_tasks_for_user):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        all_tasks_for_user = [task for task in all_tasks_for_user if search_query.lower() in task.title.lower()]
+    else:
+        for user_task in user_tasks:
+            tasks_for_user = find_task_by_title(title=user_task.task_title)
+            all_tasks_for_user.extend(tasks_for_user)
+
+def sortFunction(request, all_tasks_for_user):
+    form = SortForm(request.GET)
+    sort_option = form['sort_option'].value() if form.is_valid() else 'default'
+    if sort_option == 'due_date':
+        all_tasks_for_user.sort(key=lambda x: x.dueDate)
+    elif sort_option == 'title':
+        all_tasks_for_user.sort(key=lambda x: x.title)
+    elif sort_option == 'priority':
+        all_tasks_for_user.sort(key=lambda x: (priority_order(x.priority), x.priority))
+     
+    return form
+
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
