@@ -574,6 +574,19 @@
                       </ul>
                     </div>
                   <!-- Dropdown ends -->
+                  <form method="get" action="{% url 'dashboard' %}">
+                    <label for="filter">Filter by:</label>
+                    <select name="filter" id="filter">
+                        <option value="" {% if request.GET.filter == '' %}selected{% endif %}>All</option>
+                        <option value="H" {% if request.GET.filter == 'H' %}selected{% endif %}>High Priority</option>
+                        <option value="M" {% if request.GET.filter == 'M' %}selected{% endif %}>Medium Priority</option>
+                        <option value="L" {% if request.GET.filter == 'L' %}selected{% endif %}>Low Priority</option>
+                        <option value="not_started" {% if request.GET.filter == 'not_started' %}selected{% endif %}>Not Started</option>
+                        <option value="working_on_it" {% if request.GET.filter == 'working_on_it' %}selected{% endif %}>Working On It</option>
+                        <option value="completed" {% if request.GET.filter == 'completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                    <button type="submit"><i class="fas fa-filter"></i> Apply Filter</button>
+                </form>
                   <div>
                   <form method="get" action="{% url 'dashboard' %}" class="dropdown">
                     {% csrf_token %}
@@ -590,6 +603,8 @@
                         <th>Title</th>
                         <th>Information</th>
                         <th>Due Date</th>
+                        <th>Priority</th>
+                        <th>Status</th>
                         <!-- Add more columns if needed -->
                     </tr>
                 </thead>
@@ -599,6 +614,8 @@
                         <td>{{ task.title }}</td>
                         <td>{{ task.information }}</td>
                         <td>{{ task.dueDate }}</td>
+                        <td>{{ task.priority }}</td>
+                        <td> {{ task.status }}</td>
                         <!-- Add more columns if needed -->
                     </tr>
                     {% endfor %}

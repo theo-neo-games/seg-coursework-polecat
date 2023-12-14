@@ -26,19 +26,37 @@ from .forms import SortForm
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-    # Get all tasks related to the current user
     user_tasks = find_user_task_by_username(current_user)
-    all_tasks_for_user = [] # List to store all tasks corresponding to user
+    all_tasks_for_user = []  # List to store all tasks corresponding to user
 
     # Search functionality
-    searchFunction(request, user_tasks, all_tasks_for_user)
+    all_tasks_for_user = searchFunction(request, user_tasks, all_tasks_for_user)
 
-    #Sort functionality
+    # Sort functionality
     form = sortFunction(request, all_tasks_for_user)
 
-    # Limit the number of displayed tasks to 6
-    limited_tasks = all_tasks_for_user[:6]
-    return render(request, 'dashboard.html', {'user': current_user, 'tasks': limited_tasks, 'form': form})
+    # Filter functionality
+    filter_option = request.GET.get('filter', '')
+    filtered_tasks = filterFunction(all_tasks_for_user, filter_option)
+    
+    
+    # Initialize limited_tasks before the try block
+    limited_tasks = []
+
+    try:
+        # Limit the number of displayed tasks to 6
+        limited_tasks = filtered_tasks[:6]
+    except UnboundLocalError:
+        pass  # Handle the exception if needed
+
+    context = {
+        'user': current_user,
+        'tasks': limited_tasks,
+        'form': form,
+        'filtered_tasks': filtered_tasks,
+    }
+
+    return render(request, 'dashboard.html', context)
 
 @login_prohibited
 def home(request):
@@ -76,14 +94,17 @@ def viewTasks(request):
    all_tasks_for_user = [] # List to store all tasks corresponding to user
 
     # Search functionality
-   searchFunction(request, user_tasks, all_tasks_for_user)
+   all_tasks_for_user = searchFunction(request, user_tasks, all_tasks_for_user)
 
-   print("Team Names:", [team.team_name for team in teams])
+   #Filter functionality
+   filter_option = request.GET.get('filter', '')
+   filtered_tasks = filterFunction(all_tasks_for_user, filter_option)
    context = {
         'all_tasks_for_user': all_tasks_for_user,
         'all_tasks_for_team': all_tasks_for_team,
         'teams': teams,
         'username' : current_user,
+        'filtered_tasks': filtered_tasks,
     }
    
    form = sortFunction(request, all_tasks_for_user)
@@ -101,6 +122,7 @@ def searchFunction(request, user_tasks, all_tasks_for_user):
         for user_task in user_tasks:
             tasks_for_user = find_task_by_title(title=user_task.task_title)
             all_tasks_for_user.extend(tasks_for_user)
+    return all_tasks_for_user
 
 def sortFunction(request, all_tasks_for_user):
     form = SortForm(request.GET)
@@ -114,6 +136,23 @@ def sortFunction(request, all_tasks_for_user):
      
     return form
 
+def filterFunction(all_tasks_for_user, filter_option):
+    if filter_option == 'H':
+        filtered_tasks = [task for task in all_tasks_for_user if task.priority == 'high']
+    elif filter_option == 'M':
+        filtered_tasks = [task for task in all_tasks_for_user if task.priority == 'mid']
+    elif filter_option == 'L':
+        filtered_tasks = [task for task in all_tasks_for_user if task.priority == 'low']
+    elif filter_option == 'not_started':
+        filtered_tasks = [task for task in all_tasks_for_user if task.status == 'Not Started']
+    elif filter_option == 'working_on_it':
+        filtered_tasks = [task for task in all_tasks_for_user if task.status == 'Working on it']
+    elif filter_option == 'completed':
+        filtered_tasks = [task for task in all_tasks_for_user if task.status == 'Completed']
+    else:
+      filtered_tasks = all_tasks_for_user
+
+    return filtered_tasks
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
