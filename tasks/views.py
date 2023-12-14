@@ -14,12 +14,14 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 import json
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from .models import  User, find_teams_by_username, create_team_entry, find_users_by_team, add_member, delete_entries_by_team_name, find_invites_by_username,find_invites_by_id, send_invite_by_username,delete_invite_by_id, delete_team_by_name_and_user
 from django.db.models import Q
 from .models import New_Task, Task_dependency, Team_Task, User_Task,Time_Log, find_team_task_by_teamname, find_task_by_title,find_user_task_by_username, find_dependency_by_task_title, find_assigned_members_by_title
 from django.db.models.functions import Lower
 from .forms import SortForm
+from django.utils import timezone
+
 @login_required
     
 
@@ -39,7 +41,6 @@ def dashboard(request):
     filter_option = request.GET.get('filter', '')
     filtered_tasks = filterFunction(all_tasks_for_user, filter_option)
     
-    
     # Initialize limited_tasks before the try block
     limited_tasks = []
 
@@ -47,7 +48,7 @@ def dashboard(request):
         # Limit the number of displayed tasks to 6
         limited_tasks = filtered_tasks[:6]
     except UnboundLocalError:
-        pass  # Handle the exception if needed
+        pass 
 
     context = {
         'user': current_user,
