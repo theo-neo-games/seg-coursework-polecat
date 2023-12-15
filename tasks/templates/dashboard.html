@@ -539,13 +539,21 @@
                 <h2>Timeline</h2>
             </div>
 
-            {% for task in tasks %}
-              <div class="oneTask">
+            {% for task in timeline_tasks %}
+            <div class="oneTask">
                 <div class="taskName">{{ task.title }}</div>
-                <i class="fas fa-info-circle" onclick="showTaskInfo('{{ task.information }}')"></i>
-                <i class="fa-solid fa-user-group"></i>
-              </div>
-              {% endfor %}
+                <i class="fas fa-calendar-alt" style="font-size: 13px;"> {{task.dueDate}}</i>
+                <div>
+                  {% if task.priority == 'high' %}
+                      <i class="fas fa-flag" style="color: rgb(118, 15, 15); font-size: 13px;"> High</i>
+                  {% elif task.priority == 'medium' %}
+                      <i class="fas fa-flag" style="color: rgb(163, 163, 17); font-size: 13px;"> Medium</i>
+                  {% elif task.priority == 'low' %}
+                      <i class="fas fa-flag" style="color: rgb(163, 228, 163); font-size: 13px;"> Low</i>
+                  {% endif %}
+                </div>
+            </div>
+        {% endfor %}
             
           </div>
         <!--Here is the implementaion for the third container (Tasks) -->

@@ -41,12 +41,21 @@ def dashboard(request):
     filter_option = request.GET.get('filter', '')
     filtered_tasks = filterFunction(all_tasks_for_user, filter_option)
     
+    # Filter tasks with high priority
+    high_priority_tasks = [task for task in filtered_tasks if task.priority == 'high']
+
+    # Sort high priority tasks based on due date
+    high_priority_tasks.sort(key=lambda x: x.dueDate)
+
+    # Take the first three high priority tasks for the timeline
+    timeline_tasks = high_priority_tasks[:3]
+
     # Initialize limited_tasks before the try block
     limited_tasks = []
 
     try:
         # Limit the number of displayed tasks to 6
-        limited_tasks = filtered_tasks[:3]
+        limited_tasks = filtered_tasks[:6]
     except UnboundLocalError:
         pass 
 
@@ -55,6 +64,7 @@ def dashboard(request):
         'tasks': limited_tasks,
         'form': form,
         'filtered_tasks': filtered_tasks,
+        'timeline_tasks': timeline_tasks,
     }
 
     return render(request, 'dashboard.html', context)

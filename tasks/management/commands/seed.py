@@ -94,10 +94,11 @@ class Command(BaseCommand):
             is_staff=data['user_tier'] >= 1,
             is_superuser=data['user_tier'] >= 2
         )
+
         Team_New.objects.create(
-            team_name=data['team_name'],
-            username=data['username'],
-            is_team_host=data['is_team_host']
+        team_name=data['team_name'],
+        username=data['username'],
+        is_team_host=data['is_team_host']
         )
 
 def create_username(first_name, last_name):
