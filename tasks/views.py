@@ -46,7 +46,7 @@ def dashboard(request):
 
     try:
         # Limit the number of displayed tasks to 6
-        limited_tasks = filtered_tasks[:6]
+        limited_tasks = filtered_tasks[:3]
     except UnboundLocalError:
         pass 
 

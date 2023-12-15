@@ -162,6 +162,8 @@
       .search--box i:hover{
         transform: scale(1.1);
       }
+
+      
       /*.tasks--container{
         background-color:  rgb(119, 20, 23);
         padding: 2rem;
@@ -209,13 +211,13 @@
       .details .tasks{
         position: relative;
         display: grid;
-        min-height: 300px;
+        min-height: 400px;
         background: #fff;
         padding: 20px;
         box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
         border-radius: 20px;
         background-color:  #fff;
-        min-width: 700px;
+        min-width: 1100px;
       }
 
       .details .tasks-container{
@@ -290,11 +292,11 @@
         padding: 10px;
       }
       .details .tasks table tr td:last-child{
-        text-align: end;
+        text-align: center;
       }
 
       .details .tasks table tr td:nth-child(2){
-        text-align: end; 
+        text-align: center; 
       }
 
       .details .tasks table tr td:nth-child(3){
@@ -345,6 +347,9 @@
   border-radius: 50px;
   
 }
+.spacing {
+    margin-bottom: 10px;
+
 
 .dropdown {
   position: relative;
@@ -447,6 +452,7 @@
     padding: 5px;  /* Adjust padding as needed */
     cursor: pointer;  /* Add pointer cursor for better user experience */
 }
+}
 
 .oneTask {
         text-align: center;
@@ -548,53 +554,32 @@
               <div class="tasks-container">
                 
             
-                  <!-- Search box input start -->
-                  <div class="search-box">
-                    <form method="get" action="{% url 'dashboard' %}">
-                      <div class="search">
-                        <input type="text" id="search-input" name="search" placeholder="Search by task name..." value="{{ search_query }}" />
-                        <button type="submit" class="search-icon"><i class="fas fa-search"></i></button>
-                      </div>
-                    </form>
   
-                  <!-- Search box input ends -->
-                  <!-- Dropdown start -->
-            
-                      <div id="drop-text" class="dropdown-text">
-                          <span id="span">Sort by</span>
-                          <i id="icon" class="fa-solid fa-chevron-down"></i>
+
+                      <form method="get" action="{% url 'dashboard' %}">
+                        <label for="filter">Filter by:</label>
+                        <select name="filter" id="filter">
+                            <option value="" {% if request.GET.filter == '' %}selected{% endif %}>All</option>
+                            <option value="H" {% if request.GET.filter == 'H' %}selected{% endif %}>High Priority</option>
+                            <option value="M" {% if request.GET.filter == 'M' %}selected{% endif %}>Medium Priority</option>
+                            <option value="L" {% if request.GET.filter == 'L' %}selected{% endif %}>Low Priority</option>
+                            <option value="not_started" {% if request.GET.filter == 'not_started' %}selected{% endif %}>Not Started</option>
+                            <option value="working_on_it" {% if request.GET.filter == 'working_on_it' %}selected{% endif %}>Working On It</option>
+                            <option value="completed" {% if request.GET.filter == 'completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                        <button type="submit"><i class="fas fa-filter"></i> Apply Filter</button>
+                      </form>
+
+                      <div class="spacing"></div>
+
+                      <div>
+                        <form method="get" action="{% url 'dashboard' %}" class="dropdown">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit">Apply Sort</button>
+                        </form>
                       </div>
-                      <ul id="list" class="dropdown-list">
-                          <li class="dropdown-list-item"><a href="?sort=default">Default</a></li>
-                          <li class="dropdown-list-item"><a href="?sort=due_date">Due Date</a></li>
-                          <li class="dropdown-list-item"><a href="?sort=title">Title A-Z</a></li>
-                          <li class="dropdown-list-item"><a href="?sort=priority">Priority</a></li>
-                          <!-- Add other sorting options as needed -->
-                      </ul>
-                    
-                  <!-- Dropdown ends -->
-                  <form method="get" action="{% url 'dashboard' %}">
-                    <label for="filter">Filter by:</label>
-                    <select name="filter" id="filter">
-                        <option value="" {% if request.GET.filter == '' %}selected{% endif %}>All</option>
-                        <option value="H" {% if request.GET.filter == 'H' %}selected{% endif %}>High Priority</option>
-                        <option value="M" {% if request.GET.filter == 'M' %}selected{% endif %}>Medium Priority</option>
-                        <option value="L" {% if request.GET.filter == 'L' %}selected{% endif %}>Low Priority</option>
-                        <option value="not_started" {% if request.GET.filter == 'not_started' %}selected{% endif %}>Not Started</option>
-                        <option value="working_on_it" {% if request.GET.filter == 'working_on_it' %}selected{% endif %}>Working On It</option>
-                        <option value="completed" {% if request.GET.filter == 'completed' %}selected{% endif %}>Completed</option>
-                    </select>
-                    <button type="submit"><i class="fas fa-filter"></i> Apply Filter</button>
-                </form>
-                  <div>
-                  <form method="get" action="{% url 'dashboard' %}" class="dropdown">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit">Apply Sort</button>
-                  </form>
-                  </div>
-                </div>
-              </div> 
+                      </div>
 
               <table>
                 <thead>
