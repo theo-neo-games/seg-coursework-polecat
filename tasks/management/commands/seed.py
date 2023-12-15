@@ -64,6 +64,7 @@ class Command(BaseCommand):
             taskNumber = randint(1, 5)
             for task in range(taskNumber):
                 taskNameFound = False
+                taskName = ""
                 while not taskNameFound:
                     taskName = self.faker.text(max_nb_chars=20)
                     if not taskName in Team_Task.objects.filter(teamname=self.currentTeamName):
